@@ -53,4 +53,9 @@ v.in.ogr input="PG:host=localhost dbname=IUCN user=jferrer"  layer=wdpa_analysis
 v.in.ogr input="PG:host=localhost dbname=IUCN user=jferrer"  layer=wdpa_analysis_2000 output=WDPA_2000
 v.in.ogr input="PG:host=localhost dbname=IUCN user=jferrer"  layer=wdpa_analysis_2013 output=WDPA_2013
 
+g.region res=00:01:00
+for k in WDPA_all WDPA_2000 WDPA_2013
+do
+   v.to.rast input=${k} output=${k} use=val val=1
+done
 ```

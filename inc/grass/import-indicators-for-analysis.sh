@@ -9,7 +9,7 @@ g.mapset -c indicators
 for k in 2000 2013
 do
    r.proj input=HFP${k}i output=HFP${k}i location=HFP mapset=PERMANENT dbase=$GISDB/raw
-   ##r.proj input=WDPA_${k} output=WDPA_${k} location=WDPA mapset=PERMANENT dbase=$GISDB/raw
+   r.proj input=WDPA_${k} output=WDPA_${k} location=WDPA mapset=PERMANENT dbase=$GISDB/raw
 done
 
 for k in 2008 2013
