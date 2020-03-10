@@ -1,8 +1,27 @@
 # Preliminary global assessment of pressures and protection of Ecosystem Functional Groups
 
-## Introduction
+## Citation:
+This source code is part of the publication:
 
-A global ecosystem typology shaped around robust design principles is essential information infrastructure for well-informed decisions to achieve dual, internationally mandated goals of conserving biodiversity and sustaining ecosystem services. These overarching goals require parties to the United Nations Convention on Biological Diversity to report on progress towards the [Aichi Targets at the Conference of Parties in 2020](https://www.cbd.int/sp/targets/).
+David A. Keith, [Jose R. Ferrer-Paris](https://github.com/jrfep), Emily Nicholson, Melanie J. Bishop, Beth A. Polidoro, Eva Ramirez-Llodra, Mark G. Tozer, Jeanne L. Nel, Ralph Mac Nally, Edward J. Gregr, Kate E. Watermeyer, Franz Essl, Don Faber-Langendoen, Janet Franklin, Caroline E. R. Lehmann, Andres Etter, Dirk Roux, Jonathan S. Stark, Jessica A. Rowland, Neil A. Brummitt, Ulla C. Fernandez-Arcaya, Iain M. Suthers, Susan K. Wiser, Ian Donohue, Leland J. Jackson, R. Toby Pennington, Nathalie Pettorelli, Angela Andrade, Arild Lindgaard, Teemu Tahvanainan, Aleks Terauds, James E. M. Watson , Michael A Chadwick, [Nicholas J. Murray](https://github.com/nick-murray), Justin Moat, Patricio Pliscoff, Irene Zager, Richard T. Kingsford
+
+‘Earth’s ecosystems: a function-based typology for conservation and sustainable management’
+
+(*submitted*)
+
+
+
+##  The IUCN Global Ecosystem Typology
+
+Version 1.01 of the [IUCN Global Ecosystem Typology](https://iucnrle.org/static/media/uploads/references/research-development/keith_etal_iucnglobalecosystemtypology_v1.01.pdf) is now available. The new typology comprises six hierarchical levels to support applications across global to local scales. The three upper levels classify ecosystems based on their functional characteristics, irrespective of species composition. The three lower levels of classification distinguish functionally similar ecosystems from one another based on compositional resemblance and enable integration of established classifications already in use and incorporated into policy infrastructure at national levels. This is crucial, as important conservation action occurs at local levels, where most expertise resides.
+
+The typology is based on an explicit theoretical framework with contributions from an extensive global network of ecosystem experts. It differs from the [IUCN Habitats Classification Scheme](https://www.iucnredlist.org/resources/habitat-classification-scheme), designed to characterize habitats of individual species rather than ecosystem processes. Version 1.01 includes a set of systematic profiles describing the key ecological traits, functional processes and global distribution of biomes and ecosystem functional groups throughout the biosphere. You can browse the typology at our [preliminary site](https://jrfep.github.io/Ecosystem-profiles-comments/). The typology applies the same classificatory framework and underlying model to ecosystems across marine, freshwater, terrestrial and subterranean environments.
+
+## Policy context
+
+The conservation and management of ecosystems has never been more central to the future of biodiversity and human well-being on Earth. The <a href="https://www.cbd.int/sp/targets/" target="_blank">CBD Aichi targets</a> and <a href="https://www.un.org/sustainabledevelopment/sustainable-development-goals/" target="_blank">UN Sustainable Development Goals</a> mandate global action that depends directly or indirectly on ecosystem assessment. The <a href="https://www.cbd.int/article/2020-01-10-19-02-38" target="_blank">CBD post-2020 agenda</a> also focusses heavily on ecosystem conservation.</p>
+
+Information infrastructure to support these global policy initiatives is developing rapidly, including the <a href="https://seea.un.org/content/seea-experimental-ecosystem-accounting-revision" target="_blank">UN System of Environmental-Economic Accounting – Experimental Ecosystem Accounting</a> (SEEA EEA), and listing criteria for both the <a href="https://iucnrle.org/about-rle/" target="_blank">IUCN Red List of Ecosystems</a> (RLE) and<a href="https://www.iucn.org/resources/conservation-tools/world-database-on-key-biodiversity-areas" target="_blank"> Key Biodiversity Areas</a> (KBA), among several other tools. All initiatives, their overarching policy framework, and several other activities require a standardized, globally consistent, spatially explicit typology and terminology for managing the world’s ecosystems and their services.
 
 We undertook a global-scale assessment of ecosystem degradation ([Target 5](https://www.cbd.int/doc/strategic-plan/targets/T5-quick-guide-en.pdf)), some of its causes and protective action ([Target 11](https://www.cbd.int/doc/strategic-plan/targets/T5-quick-guide-en.pdf)) using available data on the distribution of ecosystem functional groups, spatial patterns in ecosystem stressors and the distribution of protected areas.
 
@@ -17,12 +36,3 @@ We also intersected the indicative maps of each terrestrial EFG (T, TF, TM, MTF)
 To assess protection status, we analysed the spatial intersection of the World Database on Protected Areas (WDPA) with indicative distribution maps of the EFGs (Appendix S4) to estimate the proportion of EFG indicative distribution maps. We analyses ecosystem representation in protected areas classified in IUCN categories I to IV, and designated at the regional, national or international level. We summarized the areas of wild, protected and degraded or transformed areas for each EFG in Sankey charts.
 
 We acknowledge several limitations of the HFP and MCHI, including: i) the reliance on measures of pressures, rather than measures of their impact; ii) the limited scope of the indices, which exclude some types of pressures; iii) structural constraints on the indices imposed by use of indirect proxies for some pressures; and iv) incomplete data sets for included variables (Halpern et al.2015; Venter et al 2016). However, we considered the data sufficient for our demonstrative purposes and for inferences about very general patterns in the global status of ecosystems, except where stated. We used our results to suggest an agenda for improving data quality for future assessments.
-
-## Citation:
-This source code is part of the publication:
-
-David A. Keith, [Jose R. Ferrer-Paris](https://github.com/jrfep), Emily Nicholson, Melanie J. Bishop, Beth A. Polidoro, Eva Ramirez-Llodra, Mark G. Tozer, Jeanne L. Nel, Ralph Mac Nally, Edward J. Gregr, Kate E. Watermeyer, Franz Essl, Don Faber-Langendoen, Janet Franklin, Caroline E. R. Lehmann, Andres Etter, Dirk Roux, Jonathan S. Stark, Jessica A. Rowland, Neil A. Brummitt, Ulla C. Fernandez-Arcaya, Iain M. Suthers, Susan K. Wiser, Ian Donohue, Leland J. Jackson, R. Toby Pennington, Nathalie Pettorelli, Angela Andrade, Arild Lindgaard, Teemu Tahvanainan, Aleks Terauds, James E. M. Watson , Michael A Chadwick, [Nicholas J. Murray](https://github.com/nick-murray), Justin Moat, Patricio Pliscoff, Irene Zager, Richard T. Kingsford
-
-‘Earth’s ecosystems: a function-based typology for conservation and sustainable management’
-
-(*submitted*)
