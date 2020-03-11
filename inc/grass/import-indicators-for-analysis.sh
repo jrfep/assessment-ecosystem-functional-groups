@@ -6,6 +6,9 @@ fi
 
 g.mapset -c indicators
 
+## using -180 and 180 for longitude produces an output of one single column for HFP files
+g.region n=90 s=-90 w=-179.975 e=179.975 res=00:01:00
+
 for k in 2000 2013
 do
    r.proj input=HFP${k}i output=HFP${k}i location=HFP mapset=PERMANENT dbase=$GISDB/raw
@@ -16,7 +19,6 @@ for k in 2008 2013
 do
    r.proj input=MCHI${k} output=MCHI${k} location=MCHI mapset=PERMANENT dbase=$GISDB/raw
    r.null MCHI${k} setnull=0
-
 done
 
 for target in p_cult p_past p_urban p_crop p_rice p_irrig
