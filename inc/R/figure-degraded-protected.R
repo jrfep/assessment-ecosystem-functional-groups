@@ -8,6 +8,7 @@ require(viridis)
 work.dir <- Sys.getenv("WORKDIR")
 fig.dir <- sprintf("%s/output/",Sys.getenv("SCRIPTDIR"))
 Rdata.dir <- sprintf("%s/Rdata/",Sys.getenv("SCRIPTDIR"))
+shiny.dir <- sprintf("%s/inc/shiny.app",Sys.getenv("SCRIPTDIR"))
 setwd(work.dir)
 
 #choosing colors
@@ -92,7 +93,9 @@ d$biome <- gsub("\\.[0-9]","",d$Names)
  biome.labels <- c("F1 Rivers","F2 Lakes","FM1 Transitional waters", "M1 Marine shelves","M2 Pelagic ocean waters", "M3 Deep seafloor","MFT1 Brackish tidal systems", "MT1 Shoreline systems", "T1 Tropical-subtropical forests", "T2 Temperate-boreal woodlands", "T3 Shrub-dominated woodlands", "T4 Grassy ecosystems", "T5 Deserts and semi-deserts", "T6 Cryogenic ecosystems", "TF1 Palustrine wetlands","MT2 Supralittoral systems")
 d$biome.lab <- biome.labels[pmatch(d$biome,biome.labels,duplicates.ok=T)]
 
+d.legend <- data.frame(lab=biome.labels,pch=1:16,col=sample(clrs,16,replace=T))
 
+save(file=sprintf("%s/Rdata/summary.rda",shiny.dir),d,d.legend)
 ## EFG plots
 
 plotT <- ggplot(subset(d,grp %in% "Terrestrial"), aes(degraded, protected, color = biome, shape=biome)) +
