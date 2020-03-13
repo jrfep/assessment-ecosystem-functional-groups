@@ -75,7 +75,7 @@ source $SCRIPTDIR/inc/grass/extract-protected-degraded-summaries-2013.sh
 
 ## Summary and analysis
 
-###
+### Read tables and summarize data
 
 ```sh
 Rscript --vanilla $SCRIPTDIR/inc/R/read-protected-degraded-table.R
@@ -87,7 +87,17 @@ R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R ## not workin
 
 ```
 
-### Create Sankey plots
+### Interactive figures
+
+TO DO: Shiny app to show relationships between protected and degraded, with option to select original maps and newer version of maps.
+
+
+### Output figures
+
+TO DO: Select final layout of figures for manuscript .
+
+GGplots with R
+  Sankey plots with python
 
 ```sh
 cd $WORKDIR
