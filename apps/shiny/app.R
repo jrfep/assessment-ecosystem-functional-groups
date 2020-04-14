@@ -56,16 +56,16 @@ server <- function(input, output) {
     smbl = d.legend$pch[match(unique(selected_grps()$biome.lab), d.legend$lab)] #c(0,0,16,16,16,16,16,16,17,0)
     labs = d.legend$lab[match(unique(selected_grps()$biome.lab), d.legend$lab)]
     par(mar = c(4, 4, 1, 1))
-    p <-   ggplot(selected_grps(), aes(degraded, protected, color = biome, shape=biome)) +
+    p <-   ggplot(selected_grps(), aes(degraded, protected, color = biome, shape=biome,lab=Code)) +
              scale_shape_manual("", values=smbl,labels=labs)+
              scale_color_manual("", values=clr2,labels=labs)+
-             geom_point(aes(text=Names), size = 5) + #geom_text_repel(aes(label = Names),colour=1,size=3) +
+             geom_point( size = 5) + #geom_text_repel(aes(label = Code),colour=1,size=3) +
              labs( x = "% exposed to high pressures",
              y = "% protected",colour = "Biomes") + theme_classic() +
              theme(legend.position = "right", legend.text = element_text(size=9,angle=0,colour ="black"), axis.title = element_text(size = 12), axis.text = element_text(size = 12), panel.border=element_rect(colour="black",fill=NA,size=1)) +
              geom_hline(yintercept = 17, color="black",lty=3,lwd=.5) +
              geom_vline(xintercept=70,color="black",lty=3,lwd=.5) + coord_cartesian(xlim=c(0,100),ylim=c(0,50))
-      ggplotly(p, tooltip=c("text","x", "y"))
+      ggplotly(p, tooltip=c("lab","x", "y"))
         #print(p)
 
      })

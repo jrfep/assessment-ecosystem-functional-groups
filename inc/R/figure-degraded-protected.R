@@ -66,19 +66,19 @@ table(round(d1[,"unknown",2]/ rowSums(d1[,,2],na.rm=T),2)>.05)
 d1 <- with(subset(EFG.dts, MAP %in% "orig" & (gsub("[0-9.]","",EFG) %in% c("T", "TF", "MT", "MFT", "TM")) & HFP %in% c("0","1")), tapply(area,list(EFG,clase),sum))
 d1 <- d1[,!colnames(d1) %in% c("inconsistent","unknown")]
 d1 <- data.frame(d1*100/rowSums(d1))
-d1$Names <- gsub("_",".",rownames(d1))
+d1$Code <- gsub("_",".",rownames(d1))
 d1$grp <-  "Terrestrial"
 
 d2 <- with(subset(EFG.dts, MAP %in% "orig" & (gsub("[0-9.]","",EFG) %in% c("F", "FM")) & HFP %in% c("0","1")), tapply(area,list(EFG,clase),sum))
 d2 <- d2[,!colnames(d2) %in% c("inconsistent","unknown")]
 d2 <- data.frame(d2*100/rowSums(d2))
-d2$Names <- gsub("_",".",rownames(d2))
+d2$Code <- gsub("_",".",rownames(d2))
 d2$grp <-  "Freshwater"
 
 d3 <- with(subset(EFG.dts, MAP %in% "orig" & (gsub("[0-9.]","",EFG) %in% c("M", "MT", "MFT", "FM")) & MCHI %in% c("0","1")), tapply(area,list(EFG,clase),sum))
 d3 <- d3[,!colnames(d3) %in% c("inconsistent","unknown")]
 d3 <- data.frame(d3*100/rowSums(d3))
-d3$Names <- gsub("_",".",rownames(d3))
+d3$Code <- gsub("_",".",rownames(d3))
 d3$grp <-  "Marine"
 
 d <- rbind(d1,d2,d3)
@@ -87,19 +87,19 @@ d <- rbind(d1,d2,d3)
 d1 <- with(subset(EFG.dts, MAP %in% "v2" & (gsub("[0-9.]","",EFG) %in% c("T", "TF", "MT", "MFT", "TM")) & HFP %in% c("0","1")), tapply(area,list(EFG,clase),sum))
 d1 <- d1[,!colnames(d1) %in% c("inconsistent","unknown")]
 d1 <- data.frame(d1*100/rowSums(d1))
-d1$Names <- gsub("_",".",rownames(d1))
+d1$Code <- gsub("_",".",rownames(d1))
 d1$grp <-  "Terrestrial"
 
 d2 <- with(subset(EFG.dts, MAP %in% "v2" & (gsub("[0-9.]","",EFG) %in% c("F", "FM")) & HFP %in% c("0","1")), tapply(area,list(EFG,clase),sum))
 d2 <- d2[,!colnames(d2) %in% c("inconsistent","unknown")]
 d2 <- data.frame(d2*100/rowSums(d2))
-d2$Names <- gsub("_",".",rownames(d2))
+d2$Code <- gsub("_",".",rownames(d2))
 d2$grp <-  "Freshwater"
 
 d3 <- with(subset(EFG.dts, MAP %in% "v2" & (gsub("[0-9.]","",EFG) %in% c("M", "MT", "MFT", "FM")) & MCHI %in% c("0","1")), tapply(area,list(EFG,clase),sum))
 d3 <- d3[,!colnames(d3) %in% c("inconsistent","unknown")]
 d3 <- data.frame(d3*100/rowSums(d3))
-d3$Names <- gsub("_",".",rownames(d3))
+d3$Code <- gsub("_",".",rownames(d3))
 d3$grp <-  "Marine"
 
 e <- rbind(d1,d2,d3)
@@ -113,7 +113,7 @@ e$version <- "v2.0"
 d <- rbind(d,e)
 
 d$grp <- factor(d$grp,levels=c("Terrestrial","Freshwater","Marine"))
-d$biome <- gsub("\\.[0-9]","",d$Names)
+d$biome <- gsub("\\.[0-9]","",d$Code)
 
 ## this is for David
 ## write.csv(file="Table_Degraded_Protected_EFG.csv",d)
@@ -137,7 +137,7 @@ shiny::runApp(sprintf('%s/app.R',shiny.dir))
 plotT <- ggplot(subset(d,grp %in% "Terrestrial" & version=="v1.0"), aes(degraded, protected, color = biome, shape=biome)) +
    scale_shape_manual("", values=c(0,0,16,16,16,16,16,16,17,0),labels=biome.labels)+
    scale_color_manual("", values=clr2[c(1,4,1:6,6,4)],labels=biome.labels)+
-   geom_point( size = 2) + #geom_text_repel(aes(label = Names),colour=1,size=3) +
+   geom_point( size = 2) + #geom_text_repel(aes(label = Code),colour=1,size=3) +
    labs( x = "% exposed to high pressures",
    y = "% protected",colour = "Biomes") + theme_classic() +
    theme(legend.position = "none", legend.text = element_text(size=5,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1)) +
@@ -147,7 +147,7 @@ plotT <- ggplot(subset(d,grp %in% "Terrestrial" & version=="v1.0"), aes(degraded
 plotF <- ggplot(subset(d,grp %in% "Freshwater" & version=="v1.0"), aes(degraded, protected, color = biome, shape=biome)) +
   scale_shape_manual("", values=c(17,17,17),labels=biome.labels)+
   scale_color_manual("", values=clr2[c(1,3,5)],labels=biome.labels)+
-  geom_point( size = 2) + #geom_text_repel(aes(label = Names),colour=1,size=3) +
+  geom_point( size = 2) + #geom_text_repel(aes(label = Code),colour=1,size=3) +
   labs( x = "% exposed to high pressures",
   y = "% protected",colour = "Biomes") +theme_classic() +
   theme(legend.position = "none", legend.text = element_text(size=5,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1)) +
@@ -157,7 +157,7 @@ plotF <- ggplot(subset(d,grp %in% "Freshwater" & version=="v1.0"), aes(degraded,
 plotM <- ggplot(subset(d,grp %in% "Marine" & version=="v1.0"), aes(degraded, protected, color = biome, shape=biome)) +
  scale_shape_manual("", values=c(17,15,15,15,0,0,0),labels=biome.labels)+
  scale_color_manual("", values=clr2[c(5,6,1,3,1,4,2)],labels=biome.labels)+
- geom_point( size = 2) + #geom_text_repel(aes(label = Names),colour=1,size=3) +
+ geom_point( size = 2) + #geom_text_repel(aes(label = Code),colour=1,size=3) +
  labs( x = "% exposed to high pressures",
  y = "% protected",colour = "Biomes")  + theme_classic() +
  theme(legend.position = "none", legend.text = element_text(size=5,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1)) +
@@ -202,9 +202,9 @@ Fig3 <-  ggarrange(plotT, plotF, plotM, legEnd,
                          labels = c("a", "b", "c",NA),
                          ncol = 2, nrow = 2)
 
-Fig3.with.labels <-  ggarrange(plotT+geom_text_repel(aes(label = Names),colour=1,size=3),
-   plotF+geom_text_repel(aes(label = Names),colour=1,size=3),
-   plotM+geom_text_repel(aes(label = Names),colour=1,size=3),
+Fig3.with.labels <-  ggarrange(plotT+geom_text_repel(aes(label = Code),colour=1,size=3),
+   plotF+geom_text_repel(aes(label = Code),colour=1,size=3),
+   plotM+geom_text_repel(aes(label = Code),colour=1,size=3),
    ##legEnd,
    labels = c("a", "b","c"),
    ncol = 1, nrow = 3)
@@ -226,16 +226,16 @@ Fig3.with.labels <-  ggarrange(plotT+geom_text_repel(aes(label = Names),colour=1
                               ncol = 2, nrow = 2)
 
 Fig3.alt.colors.with.labels <-
-ggarrange(plotT + scale_color_manual("", values=clrs[c(10,8,2,4,8,7,12,10,3,4)], labels=biome.labels) + geom_text_repel(aes(label = Names),colour=1,size=3) +
+ggarrange(plotT + scale_color_manual("", values=clrs[c(10,8,2,4,8,7,12,10,3,4)], labels=biome.labels) + geom_text_repel(aes(label = Code),colour=1,size=3) +
 labs( x = "",
 y = "",colour = "Biomes")  + theme(legend.position = "none", axis.title = element_text(size = 18), axis.text = element_text(size = 14), panel.border=element_rect(colour="black",fill=NA,size=1)) + scale_x_continuous(breaks=NULL,label=NULL)
 ,
     plotF+
-     scale_color_manual("", values=clrs[c(2,4,8)],labels=biome.labels)+geom_text_repel(aes(label = Names),colour=1,size=3) + scale_x_continuous(breaks=NULL,label=NULL)  +
+     scale_color_manual("", values=clrs[c(2,4,8)],labels=biome.labels)+geom_text_repel(aes(label = Code),colour=1,size=3) + scale_x_continuous(breaks=NULL,label=NULL)  +
 labs( x = "",
 y = "% protected",colour = "Biomes")  + theme(legend.position = "none", axis.title = element_text(size = 18), axis.text = element_text(size = 14), panel.border=element_rect(colour="black",fill=NA,size=1)),
     plotM+
-       scale_color_manual("", values=clrs[c(8,2,10,9,10,8,2)],labels=biome.labels)+geom_text_repel(aes(label = Names),colour=1,size=3) +
+       scale_color_manual("", values=clrs[c(8,2,10,9,10,8,2)],labels=biome.labels)+geom_text_repel(aes(label = Code),colour=1,size=3) +
        labs( x = "% exposed to high pressures",
        y = "",colour = "Biomes")  + theme(legend.position = "none", axis.title = element_text(size = 18), axis.text = element_text(size = 14), panel.border=element_rect(colour="black",fill=NA,size=1)),
 labels = c("a", "b","c"),
@@ -263,9 +263,9 @@ ncol = 1, nrow = 3)
 
 ### this is to calculate which ones meet the target
 
- table(aggregate((d$grp %in% "Marine" & d$protected >10 | !(d$grp %in% "Marine") & d$protected >17),list(d$Names),sum)$x)
+ table(aggregate((d$grp %in% "Marine" & d$protected >10 | !(d$grp %in% "Marine") & d$protected >17),list(d$Code),sum)$x)
 
-table(aggregate((d$grp %in% "Marine" & d$protected >=9 | !(d$grp %in% "Marine") & d$protected >=16),list(d$Names),sum)$x)
+table(aggregate((d$grp %in% "Marine" & d$protected >=9 | !(d$grp %in% "Marine") & d$protected >=16),list(d$Code),sum)$x)
 
 
 ## review biome data
@@ -376,9 +376,9 @@ inch.to.mm = 25.4
 fig.width = 183*4/5
 fig.height = 247*4/5
 point.size=12
-Scatters <-  ggarrange(plotT+geom_text_repel(aes(label = Names),colour=1,size=3),
-  plotF+geom_text_repel(aes(label = Names),colour=1,size=3),
-  plotM+geom_text_repel(aes(label = Names),colour=1,size=3),
+Scatters <-  ggarrange(plotT+geom_text_repel(aes(label = Code),colour=1,size=3),
+  plotF+geom_text_repel(aes(label = Code),colour=1,size=3),
+  plotM+geom_text_repel(aes(label = Code),colour=1,size=3),
   ##legEnd,
   labels = c("a", "b","c"),
   ncol = 1, nrow = 3)
