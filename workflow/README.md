@@ -41,7 +41,6 @@ cd $WORKDIR
 conda deactivate
 grass --text -c $GISOUT/F1_1.IM.orig.tif $GISDB/ecosystem_analysis
 source $SCRIPTDIR/inc/grass/import-indicators-for-analysis.sh
-
 source $SCRIPTDIR/inc/grass/import-indicative-maps-for-analysis.sh
 
 ```
@@ -91,6 +90,10 @@ R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R ## not workin
 
 TO DO: Shiny app to show relationships between protected and degraded, with option to select original maps and newer version of maps.
 
+```sh
+R --vanilla -e "shiny::runApp('${SCRIPTDIR}/apps/shiny/app.R',host='149.171.173.203',port='4826')"
+
+```
 
 ### Output figures
 

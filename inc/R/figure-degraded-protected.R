@@ -8,7 +8,7 @@ require(viridis)
 work.dir <- Sys.getenv("WORKDIR")
 fig.dir <- sprintf("%s/output/",Sys.getenv("SCRIPTDIR"))
 Rdata.dir <- sprintf("%s/Rdata/",Sys.getenv("SCRIPTDIR"))
-shiny.dir <- sprintf("%s/inc/shiny.app",Sys.getenv("SCRIPTDIR"))
+shiny.dir <- sprintf("%s/apps/shiny/",Sys.getenv("SCRIPTDIR"))
 setwd(work.dir)
 
 #choosing colors
@@ -83,6 +83,35 @@ d3$grp <-  "Marine"
 
 d <- rbind(d1,d2,d3)
 
+## now calculate for maps with version 2
+d1 <- with(subset(EFG.dts, MAP %in% "v2" & (gsub("[0-9.]","",EFG) %in% c("T", "TF", "MT", "MFT", "TM")) & HFP %in% c("0","1")), tapply(area,list(EFG,clase),sum))
+d1 <- d1[,!colnames(d1) %in% c("inconsistent","unknown")]
+d1 <- data.frame(d1*100/rowSums(d1))
+d1$Names <- gsub("_",".",rownames(d1))
+d1$grp <-  "Terrestrial"
+
+d2 <- with(subset(EFG.dts, MAP %in% "v2" & (gsub("[0-9.]","",EFG) %in% c("F", "FM")) & HFP %in% c("0","1")), tapply(area,list(EFG,clase),sum))
+d2 <- d2[,!colnames(d2) %in% c("inconsistent","unknown")]
+d2 <- data.frame(d2*100/rowSums(d2))
+d2$Names <- gsub("_",".",rownames(d2))
+d2$grp <-  "Freshwater"
+
+d3 <- with(subset(EFG.dts, MAP %in% "v2" & (gsub("[0-9.]","",EFG) %in% c("M", "MT", "MFT", "FM")) & MCHI %in% c("0","1")), tapply(area,list(EFG,clase),sum))
+d3 <- d3[,!colnames(d3) %in% c("inconsistent","unknown")]
+d3 <- data.frame(d3*100/rowSums(d3))
+d3$Names <- gsub("_",".",rownames(d3))
+d3$grp <-  "Marine"
+
+e <- rbind(d1,d2,d3)
+
+# combine version 2 with those unchanged
+e <- rbind(e,d[!rownames(d) %in% rownames(e),])
+e <- e[rownames(d),]
+d$version <- "v1.0"
+e$version <- "v2.0"
+
+d <- rbind(d,e)
+
 d$grp <- factor(d$grp,levels=c("Terrestrial","Freshwater","Marine"))
 d$biome <- gsub("\\.[0-9]","",d$Names)
 
@@ -91,14 +120,21 @@ d$biome <- gsub("\\.[0-9]","",d$Names)
 
  biome.labels <- c("Rivers","Lakes","Transitional waters", "Marine shelves","Pelagic ocean waters", "Deep seafloor","Brackish tidal systems", "Shoreline systems", "Tropical-subtropical forests", "Temperate-boreal forests and woodlands", "Shrublands & shrub-dominated woodlands", "Tropical-temperate grassy ecosystems", "Deserts and semi-deserts", "Polar/alpine (cryogenic ecosystems)", "Palustrine wetlands","Supralittoral")
  biome.labels <- c("F1 Rivers","F2 Lakes","FM1 Transitional waters", "M1 Marine shelves","M2 Pelagic ocean waters", "M3 Deep seafloor","MFT1 Brackish tidal systems", "MT1 Shoreline systems", "T1 Tropical-subtropical forests", "T2 Temperate-boreal woodlands", "T3 Shrub-dominated woodlands", "T4 Grassy ecosystems", "T5 Deserts and semi-deserts", "T6 Cryogenic ecosystems", "TF1 Palustrine wetlands","MT2 Supralittoral systems")
-d$biome.lab <- biome.labels[pmatch(d$biome,biome.labels,duplicates.ok=T)]
 
-d.legend <- data.frame(lab=biome.labels,pch=1:16,col=sample(clrs,16,replace=T))
+ d$biome.lab <- biome.labels[pmatch(d$biome,biome.labels,duplicates.ok=T)]
+
+d.legend <- data.frame(lab=biome.labels,
+  pch=c(17,17,17,15,15,15,15,15,16,16,16,16,16,16,17,0),
+  col=clr2[c(1,6,3,4,2,1,5,6,1:6,2,4)],
+  stringsAsFactors=F)
 
 save(file=sprintf("%s/Rdata/summary.rda",shiny.dir),d,d.legend)
+
+shiny::runApp(sprintf('%s/app.R',shiny.dir))
+
 ## EFG plots
 
-plotT <- ggplot(subset(d,grp %in% "Terrestrial"), aes(degraded, protected, color = biome, shape=biome)) +
+plotT <- ggplot(subset(d,grp %in% "Terrestrial" & version=="v1.0"), aes(degraded, protected, color = biome, shape=biome)) +
    scale_shape_manual("", values=c(0,0,16,16,16,16,16,16,17,0),labels=biome.labels)+
    scale_color_manual("", values=clr2[c(1,4,1:6,6,4)],labels=biome.labels)+
    geom_point( size = 2) + #geom_text_repel(aes(label = Names),colour=1,size=3) +
@@ -108,7 +144,7 @@ plotT <- ggplot(subset(d,grp %in% "Terrestrial"), aes(degraded, protected, color
    geom_hline(yintercept = 17, color="black",lty=3,lwd=.5) +
    geom_vline(xintercept=70,color="black",lty=3,lwd=.5) + coord_cartesian(xlim=c(0,100),ylim=c(0,50))
 
-plotF <- ggplot(subset(d,grp %in% "Freshwater"), aes(degraded, protected, color = biome, shape=biome)) +
+plotF <- ggplot(subset(d,grp %in% "Freshwater" & version=="v1.0"), aes(degraded, protected, color = biome, shape=biome)) +
   scale_shape_manual("", values=c(17,17,17),labels=biome.labels)+
   scale_color_manual("", values=clr2[c(1,3,5)],labels=biome.labels)+
   geom_point( size = 2) + #geom_text_repel(aes(label = Names),colour=1,size=3) +
@@ -118,7 +154,7 @@ plotF <- ggplot(subset(d,grp %in% "Freshwater"), aes(degraded, protected, color 
   geom_hline(yintercept = 17, color="black",lty=3,lwd=.5) +
   geom_vline(xintercept=70,color="black",lty=3,lwd=.5) + coord_cartesian(xlim=c(0,100),ylim=c(0,50))
 
-plotM <- ggplot(subset(d,grp %in% "Marine"), aes(degraded, protected, color = biome, shape=biome)) +
+plotM <- ggplot(subset(d,grp %in% "Marine" & version=="v1.0"), aes(degraded, protected, color = biome, shape=biome)) +
  scale_shape_manual("", values=c(17,15,15,15,0,0,0),labels=biome.labels)+
  scale_color_manual("", values=clr2[c(5,6,1,3,1,4,2)],labels=biome.labels)+
  geom_point( size = 2) + #geom_text_repel(aes(label = Names),colour=1,size=3) +

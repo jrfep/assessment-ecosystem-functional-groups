@@ -2,6 +2,7 @@
 library(shiny)
 #library(shinythemes)
 library(dplyr)
+require(plotly)
 #library(readr)
 
 # Load data
@@ -18,13 +19,16 @@ ui <- fluidPage(##theme = shinytheme("lumen"),
       # Select type of trend to plot
       selectInput(inputId = "type", label = strong("Realm"),
                   choices = unique(data$grp),
-                  selected = "Terrestrial")
+                  selected = "Terrestrial"),
+      selectInput(inputId = "vers", label = strong("Version"),
+                  choices = unique(data$version),
+                  selected = "v1.0")
                ),
 
     # Output: Description, lineplot, and reference
     mainPanel(
-      plotOutput(outputId = "lineplot", height = "300px",click = "plot_click"),
-       verbatimTextOutput("info")
+      plotlyOutput(outputId = "lineplot", height = "600px"),#,click = "plot_click"),
+
     )
 
   )
@@ -39,25 +43,34 @@ server <- function(input, output) {
        data %>%
       filter(
         grp == input$type
-        )
+        ) %>%
+       filter(
+         version == input$vers
+         )
   })
 
 
   # Create scatterplot object the plotOutput function is expecting
-  output$lineplot <- renderPlot({
-    color = d.legend$col[match(selected_grps()$biome.lab, d.legend$lab)]
-    smbl = d.legend$pch[match(selected_grps()$biome.lab, d.legend$lab)]
-    labs = rownames(selected_grps())
+  output$lineplot <- renderPlotly({
+    clr2 = d.legend$col[match(unique(selected_grps()$biome.lab), d.legend$lab)] #c(0,0,16,16,16,16,16,16,17,0)
+    smbl = d.legend$pch[match(unique(selected_grps()$biome.lab), d.legend$lab)] #c(0,0,16,16,16,16,16,16,17,0)
+    labs = d.legend$lab[match(unique(selected_grps()$biome.lab), d.legend$lab)]
     par(mar = c(4, 4, 1, 1))
-    plot(x = selected_grps()$degraded, y = selected_grps()$protected, type = "p",
-         xlab = "% degraded", ylab = "% protected", col = color, pch=smbl,  fg = "white", col.lab = "black", col.axis = "#677377")
+    p <-   ggplot(selected_grps(), aes(degraded, protected, color = biome, shape=biome)) +
+             scale_shape_manual("", values=smbl,labels=labs)+
+             scale_color_manual("", values=clr2,labels=labs)+
+             geom_point(aes(text=Names), size = 5) + #geom_text_repel(aes(label = Names),colour=1,size=3) +
+             labs( x = "% exposed to high pressures",
+             y = "% protected",colour = "Biomes") + theme_classic() +
+             theme(legend.position = "right", legend.text = element_text(size=9,angle=0,colour ="black"), axis.title = element_text(size = 12), axis.text = element_text(size = 12), panel.border=element_rect(colour="black",fill=NA,size=1)) +
+             geom_hline(yintercept = 17, color="black",lty=3,lwd=.5) +
+             geom_vline(xintercept=70,color="black",lty=3,lwd=.5) + coord_cartesian(xlim=c(0,100),ylim=c(0,50))
+      ggplotly(p, tooltip=c("text","x", "y"))
+        #print(p)
+
      })
 
- output$info <- renderPrint({
-    # With base graphics, need to tell it what the x and y variables are.
-    nearPoints(data[,c("biome.lab","Names","degraded","protected")], input$plot_click, xvar = "degraded", yvar = "protected")
-    # nearPoints() also works with hover and dblclick events
-  })
+
 }
 
 # Create Shiny object
