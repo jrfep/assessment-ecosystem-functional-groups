@@ -12,19 +12,21 @@ This workflow has been creating using the following operating system and softwar
 * GDAL 2.2.3
 * PostgreSQL 10.12 with postGIS extension
 
-To set-up programming environmental variables edit the files in folder `env/` and source them in a bash shell:
-`source env/terra.sh` and `source env/project-env.sh`. We use anaconda for our python configuration, so we need to use `conda deactivate` before starting grass, and `conda activate` before running python scripts.
+To set-up programming environmental variables edit the files in folder `env/` and source them in a bash shell: `source env/project-env.sh`. We use anaconda for our python configuration, so we need to use `conda deactivate` before starting grass, and `conda activate` before running python scripts.
 
 ## Workflow
 
-This workflow describes the following steps:
+To reproduce the entire workflow, you need to follow all these steps:
 
 1. Import or download spatial data from several sources and create a series of spatial databases for use with Grass GIS software for importing projected data sources.
 2. Creates and organizes the main spatial database for the analysis using Grass GIS.
 3. Cross tabulates map data with indicators of protection, degradation and transformation
 4. Perform analysis in R and Python and output figures
+5. Run shinyApp
 
-### Data import
+If you only want to reproduce the figures you can just run the *R* code in the *[apps](../apps)* folder (jump to step 5).
+
+### Step 1. Data import
 
 Start from the working directory defined in the programming environment above: `cd $WORKDIR`.
 
@@ -32,7 +34,7 @@ Download and import external data by following the instructions in the *[data](.
 
 Import indicative maps from the Zenodo repository for all ecosystems by following  *[these instructions](../data/Ecosystems-indicative-distribution.md)*.
 
-### Data set up for analysis
+### Step 2. Data set up for analysis
 
 Run these in a new GRASS GIS location to set up the data for analysis
 
@@ -46,7 +48,7 @@ source $SCRIPTDIR/inc/grass/import-indicative-maps-for-analysis.sh
 ```
 
 
-## Cross tabulation of map data in GRASS GIS
+## Step 3. Cross tabulation of map data in GRASS GIS
 
 First we need to transform the indicators of impact into binary variables (*degraded/non-degraded*).
 
@@ -72,7 +74,7 @@ Now we can source these scripts to calculate the cross-tabulation
 source $SCRIPTDIR/inc/grass/extract-protected-degraded-summaries-2013.sh
 ```
 
-## Summary and analysis
+## Step 4. Summary and analysis
 
 ### Read tables and summarize data
 
@@ -85,6 +87,8 @@ mkdir -p $SCRIPTDIR/output/figures
 R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R ## not working!
 
 ```
+
+## Step 5. Shiny App
 
 ### Interactive figures
 
