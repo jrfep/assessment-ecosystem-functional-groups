@@ -2,13 +2,16 @@
 
 #### Citation
 
-> Keith, David A., Ferrer-Paris, Jose R., Nicholson, Emily, Bishop, Melanie J., Polidoro, Beth A., Ramirez-Llodra, Eva, … Kingsford, Richard T. (2019). Indicative distribution maps for Ecological Functional Groups - Level 3 of IUCN Global Ecosystem Typology (Version 0.0.1) [Data set]. Zenodo. http://doi.org/10.5281/zenodo.3546514
+The latest version of the dataset is available at ![10.5281/zenodo.3546513](https://zenodo.org/badge/doi/10.5281/zenodo.3546513.svg)
 
-![10.5281/zenodo.3546513](https://zenodo.org/badge/doi/10.5281/zenodo.3546513.svg)
+Here we will compare version 1.1 and version 2.0 of the indicative maps:
 
-#### Data access
+> Keith, David A., Ferrer-Paris, Jose R., Nicholson, Emily, Bishop, Melanie J., Polidoro, Beth A., Ramirez-Llodra, Eva, … Kingsford, Richard T. (2020). Indicative distribution maps for Ecological Functional Groups - Level 3 of IUCN Global Ecosystem Typology (Version 2.0.0) [Data set]. Zenodo. http://doi.org/10.5281/zenodo.3958934
 
-Download data from Zenodo
+And
+
+> Keith, David A., Ferrer-Paris, Jose R., Nicholson, Emily, Bishop, Melanie J., Polidoro, Beth A., Ramirez-Llodra, Eva, … Kingsford, Richard T. (2020). Indicative distribution maps for Ecological Functional Groups - Level 3 of IUCN Global Ecosystem Typology (Version 1.1.0) [Data set]. Zenodo. http://doi.org/10.5281/zenodo.3958622
+
 
 #### Data preparation
 
@@ -29,15 +32,33 @@ zenodo <- ZenodoManager$new(
    token = zenodoToken,
    logger = "INFO"
 )
-my_rec <- zenodo$getRecordByDOI("10.5281/zenodo.3546514")
-file_list <- zenodo$getFiles(my_rec$id)
 
-for (k in 1:length(file_list)) {
-   system(sprintf("wget --continue '%s?access_token=%s' --output-document=%s",file_list[[k]]$links$download,zenodoToken, file_list[[k]]$filename))
-   system(sprintf("tar -xjvf %s",file_list[[k]]$filename))
-   system(sprintf("mv *.tif %s/version-0.0.1/",gis.outdir))
+versions <- c("version-1.1.0"="10.5281/zenodo.3958622","version-2.0.0"="10.5281/zenodo.3958934")
+for (j in 1:2) {
+  system(sprintf("mkdir -p %s/%s",gis.outdir,names(versions)[j]))
+  setwd(sprintf("%s/%s",gis.outdir,names(versions)[j]))
+  my_rec <- zenodo$getRecordByDOI(versions[j])
+  file_list <- zenodo$getFiles(my_rec$id)
+
+  for (k in 1:length(file_list)) {
+     system(sprintf("wget --continue '%s?access_token=%s' --output-document=%s",file_list[[k]]$links$download,zenodoToken, file_list[[k]]$filename))
+  }
 }
 q()
 ```
 
-All GeoTIFF files should be now in the `$GISOUT/version-0.0.1/` folder.
+Now we can go through the folders and decompress the files:
+
+```sh
+for version in 1.1.0 2.0.0
+do
+  cd $GISOUT/version-$version
+  for arch in $(ls *tar.bz2)
+  do
+    tar -xjvf $arch
+    rm $arch
+  done
+done
+```
+
+All GeoTIFF files should be now in these two folders.

@@ -3,7 +3,7 @@
 This file describes the steps for reproducing the analysis in *Appendix S5. Preliminary global assessment of pressures and protection of Ecosystem Functional Groups, from data import to the production of outputs and products* from Keith *et al.* (submitted)
 
 ## Environment and requirements
-This workflow has been creating using the following operating system and software:
+This workflow has been created using the following operating system and software:
 
 * Xubuntu 18.04
 * R 3.6.1
@@ -41,8 +41,10 @@ Run these in a new GRASS GIS location to set up the data for analysis
 ```sh
 cd $WORKDIR
 conda deactivate
-grass --text -c $GISOUT/F1_1.IM.orig.tif $GISDB/ecosystem_analysis
+grass --text -c $GISOUT/version-1.1.0/F1.1.IM.orig_v1.0.tif $WORKDIR/ecosystem_analysis
 source $SCRIPTDIR/inc/grass/import-indicators-for-analysis.sh
+export VERSION=version-1.1.0
+export VERSION=version-2.0.0
 source $SCRIPTDIR/inc/grass/import-indicative-maps-for-analysis.sh
 
 ```
