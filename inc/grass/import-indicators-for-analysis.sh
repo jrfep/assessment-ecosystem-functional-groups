@@ -26,4 +26,19 @@ do
    r.proj input=${target} output=${target} location=Anthromes mapset=PERMANENT dbase=$GISDB/raw
 done
 
+
+##We need to transform the indicators of impact into binary variables (*degraded/non-degraded*).
+##r.univar map=HFP2000i@indicators
+##r.univar map=MCHI2008@indicators
+
+# r.quantile HFP2000i@indicators quantiles=6 ## median is 4
+# r.quantile MCHI2008@indicators quantiles=6 ## median is 2.827246
+export k=2013
+export MT=4
+r.mapcalc --overwrite expression="HFP${k}x=if(HFP${k}i@indicators>${MT},1,0)"
+export MT=2.827246
+r.mapcalc --overwrite  expression="MCHI${k}x=if(MCHI${k}@indicators>${MT},1,0)"
+
+
+
 g.mapset PERMANENT

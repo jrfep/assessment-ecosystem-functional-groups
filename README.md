@@ -1,3 +1,5 @@
+![https://zenodo.org/badge/217191201.svg]
+
 # Preliminary global assessment of pressures and protection of Ecosystem Functional Groups
 
 ## Citation:

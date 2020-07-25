@@ -36,44 +36,30 @@ Import indicative maps from the Zenodo repository for all ecosystems by followin
 
 ### Step 2. Data set up for analysis
 
-Run these in a new GRASS GIS location to set up the data for analysis
+Run this short script to create a new GRASS GIS location and set up the data for analysis
 
 ```sh
 cd $WORKDIR
 conda deactivate
 grass --text -c $GISOUT/version-1.1.0/F1.1.IM.orig_v1.0.tif $WORKDIR/ecosystem_analysis
 source $SCRIPTDIR/inc/grass/import-indicators-for-analysis.sh
-export VERSION=version-1.1.0
-export VERSION=version-2.0.0
-source $SCRIPTDIR/inc/grass/import-indicative-maps-for-analysis.sh
-
+for VERSION in version-1.1.0 version-2.0.0
+do
+  source $SCRIPTDIR/inc/grass/import-indicative-maps-for-analysis.sh
+done
 ```
 
 
 ## Step 3. Cross tabulation of map data in GRASS GIS
 
-First we need to transform the indicators of impact into binary variables (*degraded/non-degraded*).
-
-```sh
-g.mapset indicators
-g.mapsets PERMANENT,indicators,indicativeMaps
-
-##r.univar map=HFP2000i@indicators
-##r.univar map=MCHI2008@indicators
-r.quantile HFP2000i@indicators quantiles=6 ## median is 4
-r.quantile MCHI2008@indicators quantiles=6 ## median is 2.827246
-
-export k=2013
-export MT=4
-r.mapcalc --overwrite expression="HFP${k}x=if(HFP${k}i@indicators>${MT},1,0)"
-export MT=2.827246
-r.mapcalc --overwrite  expression="MCHI${k}x=if(MCHI${k}@indicators>${MT},1,0)"
-```
-
 Now we can source these scripts to calculate the cross-tabulation
 
 ```sh
-source $SCRIPTDIR/inc/grass/extract-protected-degraded-summaries-2013.sh
+grass --text -c $WORKDIR/ecosystem_analysis/PERMANENT
+for VERSION in version-1.1.0 version-2.0.0
+do
+  source $SCRIPTDIR/inc/grass/extract-protected-degraded-summaries-2013.sh
+done
 ```
 
 ## Step 4. Summary and analysis
