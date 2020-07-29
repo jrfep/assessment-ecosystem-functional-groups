@@ -62,15 +62,19 @@ do
 done
 ```
 
-## Step 4. Summary and analysis
-
 ### Read tables and summarize data
+
+Now we can read this table into an R-data file:
 
 ```sh
 Rscript --vanilla $SCRIPTDIR/inc/R/read-protected-degraded-table.R
+```
+
+## Step 4. Summary and analysis
+
+```sh
 
 mkdir -p $SCRIPTDIR/output/figures
-
 ## R script for figures with ggplot.
 R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R ## not working!
 
