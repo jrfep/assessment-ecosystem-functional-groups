@@ -164,45 +164,25 @@ pplotM <- ggplot(d.mar.1, aes(degraded, protected, color = biome.lab, shape=biom
 plotM <- pplotM  + #geom_text_repel(aes(label = Code),colour=1,size=3) +
   labs( x = "% exposed to high pressures", y = "% protected",colour = "Biomes",shape = "Biomes") +
   theme_classic() +
-  theme(legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right",  legend.direction = "horizontal", legend.box.background = element_rect(), legend.margin = margin(0, 0, 0, 0),  legend.title=element_blank(), legend.text = element_text(size=4,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))
+  theme(legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right",  legend.direction = "horizontal", legend.box.background = element_rect(), legend.margin = margin(0, 0, 0, 0),  legend.title=element_blank(), legend.text = element_text(size=6,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))
   plotT <- pplotT  + #geom_text_repel(aes(label = Code),colour=1,size=3) +
     labs( x = "% exposed to high pressures", y = "% protected",colour = "Biomes",shape = "Biomes") +
     theme_classic() +
-    theme(legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right",  legend.direction = "horizontal", legend.box.background = element_rect(), legend.margin = margin(1, 1, 1, 1),  legend.title=element_blank(), legend.text = element_text(size=4,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))
+    theme(legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right",  legend.direction = "horizontal", legend.box.background = element_rect(), legend.margin = margin(1, 1, 1, 1),  legend.title=element_blank(), legend.text = element_text(size=6,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))
 
 plotR <- pplotR  + #geom_text_repel(aes(label = Code),colour=1,size=3) +
       labs( x = "% exposed to high pressures", y = "% protected",colour = "Biomes",shape = "Biomes") +
       theme_classic() +
-      theme(legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right",  legend.direction = "horizontal", legend.box.background = element_rect(), legend.margin = margin(1, 1, 1, 1),  legend.title=element_blank(), legend.text = element_text(size=4,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))
+      theme(legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right",  legend.direction = "horizontal", legend.box.background = element_rect(), legend.margin = margin(1, 1, 1, 1),  legend.title=element_blank(), legend.text = element_text(size=6,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))
 
 plotF <- pplotF  + #geom_text_repel(aes(label = Code),colour=1,size=3) +
   labs( x = "% exposed to high pressures", y = "% protected",colour = "Biomes",shape = "Biomes") +
   theme_classic() +
-  theme(legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right",  legend.direction = "horizontal", legend.box.background = element_rect(), legend.margin = margin(1, 1, 1, 1),  legend.title=element_blank(), legend.text = element_text(size=4,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))
+  theme(legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right",  legend.direction = "horizontal", legend.box.background = element_rect(), legend.margin = margin(1, 1, 1, 1),  legend.title=element_blank(), legend.text = element_text(size=6,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))
 
 ##  ggarrange(plotT, plotF, plotM, ncol=2, nrow=2, common.legend = TRUE, legend="bottom")
       ggarrange(plotT, plotF, plotR,plotM, ncol=2, nrow=2, common.legend = F)
 
-library(cowplot)
-legend <- get_legend(
-  # create some space to the left of the legend
-  legEnd + theme(legend.box.margin = margin(0, 0, 0, 12))
-)
-
-prow <- plot_grid(
-  plotT + theme(legend.position="none"),
-  plotF + theme(legend.position="none"),
-  plotR + theme(legend.position="none"),
-  plotM + theme(legend.position="none"),
-  align = 'vh',
-  labels = c("A", "B", "C","D"),
-  hjust = -1,
-  nrow = 2
-)
-prow
-
-plot_grid(prow, legend, rel_widths = c(3, 1))
-          ## EFG plots
 
 mi.legend <- d.legend
 mi.legend$cc  <- rep(1,16)
@@ -221,6 +201,43 @@ legEnd <- ggplot(mi.legend,aes(x=cc,y=rr,color=lab,shape=lab)) +
   scale_x_continuous(breaks=NULL,label=NULL) +
   coord_cartesian(xlim=c(1,5),ylim=c(0,16))
 
+
+  library(cowplot)
+  legend <- get_legend(
+    # create some space to the left of the legend
+    legEnd + theme(legend.box.margin = margin(0, 0, 0, 12))
+  )
+
+
+    prow <- plot_grid(
+      plotT ,
+      plotF ,
+      plotR ,
+      plotM ,
+      align = 'vh',
+      labels = c("A", "B", "C","D"),
+      hjust = -1,
+      nrow = 2
+    )
+
+prow
+ggsave(file='DegradedProtectedPlot.pdf',device=pdf)
+
+  prow <- plot_grid(
+    plotT + theme(legend.position="none"),
+    plotF + theme(legend.position="none"),
+    plotR + theme(legend.position="none"),
+    plotM + theme(legend.position="none"),
+    align = 'vh',
+    labels = c("A", "B", "C","D"),
+    hjust = -1,
+    nrow = 2
+  )
+
+  #prow
+
+  plot_grid(prow, legend, rel_widths = c(3, 1))
+            ## EFG plots
 
 ## now calculate for maps with version 2
 d1 <- with(subset(EFG.dts, version %in% "version-2.0.0" & (gsub("[0-9.]","",EFG) %in% c("T", "TF", "MT", "MFT", "TM")) & HFP %in% c("0","1")), tapply(area,list(EFG,clase),sum))

@@ -72,12 +72,11 @@ Rscript --vanilla $SCRIPTDIR/inc/R/read-protected-degraded-table.R
 
 ## Step 4. Summary and analysis
 
+R script for figures with ggplot.
+
 ```sh
-
 mkdir -p $SCRIPTDIR/output/figures
-## R script for figures with ggplot.
-R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R ## not working!
-
+R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R
 ```
 
 ## Step 5. Shiny App
