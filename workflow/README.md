@@ -86,7 +86,10 @@ R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R
 TO DO: Shiny app to show relationships between protected and degraded, with option to select original maps and newer version of maps.
 
 ```sh
+cd $WORKDIR
+
 R --vanilla -e "shiny::runApp('${SCRIPTDIR}/apps/shiny/app.R',host='149.171.173.203',port='4826')"
+R --vanilla -e "shiny::runApp('${SCRIPTDIR}/apps/shiny/app.R',host='localhost',port='4826')"
 
 ```
 

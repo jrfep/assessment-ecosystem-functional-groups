@@ -6,6 +6,8 @@ require(ggrepel)
 require(ggpubr)
 require(RColorBrewer)
 require(viridis)
+library(cowplot)
+
 
 work.dir <- Sys.getenv("WORKDIR")
 fig.dir <- sprintf("%s/output/",Sys.getenv("SCRIPTDIR"))
@@ -13,175 +15,65 @@ Rdata.dir <- sprintf("%s/Rdata/",Sys.getenv("SCRIPTDIR"))
 shiny.dir <- sprintf("%s/apps/shiny/",Sys.getenv("SCRIPTDIR"))
 setwd(work.dir)
 
-#choosing colors
-clrs <- ##brewer.pal(8,"Accent")
- brewer.pal(12,"Paired")
-clr2 <- inferno(6)
- clr2 <- viridis(7)[-2]
-
 
 load(sprintf("%s/Degraded-protected-2013-all-versions.rda", Rdata.dir))
 
-biome.labels <- c("Rivers","Lakes","Transitional waters", "Marine shelves","Pelagic ocean waters", "Deep seafloor","Brackish tidal systems", "Shoreline systems", "Tropical-subtropical forests", "Temperate-boreal forests and woodlands", "Shrublands & shrub-dominated woodlands", "Tropical-temperate grassy ecosystems", "Deserts and semi-deserts", "Polar/alpine (cryogenic ecosystems)", "Palustrine wetlands","Supralittoral")
-biome.labels <- c("F1 Rivers","F2 Lakes","FM1 Transitional waters", "M1 Marine shelves","M2 Pelagic ocean waters", "M3 Deep seafloor","MFT1 Brackish tidal systems", "MT1 Shoreline systems", "T1 Tropical-subtropical forests", "T2 Temperate-boreal woodlands", "T3 Shrub-dominated woodlands", "T4 Grassy ecosystems", "T5 Deserts and semi-deserts", "T6 Cryogenic ecosystems", "TF1 Palustrine wetlands","MT2 Supralittoral systems")
 
-d.legend <- data.frame(lab=biome.labels,
-pch=c(17,17,17,15,15,15,15,15,16,16,16,16,16,16,17,0),
-col=clr2[c(1,6,3,4,2,1,5,6,1:6,2,4)],
-stringsAsFactors=F)
+## code for `degraded vs protected` plots
 
-## review EFG data
+EFG.basic.plot <- function(dataset,y,v="version-2.0.0",g="Terrestrial",h=17) {
+  x <- dataset %>% filter(group %in% g & version %in% v)
+  ggplot(x, aes(degraded, protected, colour = biome.lab, shape=biome.lab)) +
+    geom_point( size = 2) +
+    scale_colour_manual(unique(x$biome.lab),
+      values=y$col[unique(match(x$biome.lab,y$lab))]) +
+    scale_shape_manual(unique(x$biome.lab),
+      values=y$pch[unique(match(x$biome.lab,y$lab))]) +
+      geom_hline(yintercept = h, color="black",lty=3,lwd=.5) +
+      geom_vline(xintercept=70,color="black",lty=3,lwd=.5) + coord_cartesian(xlim=c(0,100),ylim=c(0,30))
+}
 
-slc <- unique(maps.x.indicators$EFG)
-## exclude the anthropogenic
-slc <- slc[!(grepl("^F3.?",slc) | grepl("^T7.?",slc) | grepl("^M4.?",slc) | grepl("^MT3.?",slc) | grepl("^S2.?",slc) | grepl("^SF2.?",slc))]
-## Ice and snow groups in the southern hemisphere are not well covered by human impact variables
-slc <- slc[!slc %in% c("T6.1","T6.2","M2.5","F2.10")]
-## Subterranean EFG are not well covered by the protection/degradation variables
-slc <- slc[!slc %in% !grepl("^S",slc)]
-## These two freshwater groups are problematic
-##slc <- slc[!slc %in% c("F2.1","F2.6")]
-
-
-EFG.dts <- maps.x.indicators %>% filter(EFG %in% slc)
-
-EFG.dts$clase <- "unknown"
-
-EFG.dts$clase[with(EFG.dts,(HFP %in% 1) | (MCHI %in% 1))] <- "degraded"
-EFG.dts$clase[with(EFG.dts,(WDPA %in% 1))] <- "protected"
-EFG.dts$clase[with(EFG.dts,((HFP %in% 0) | (MCHI %in% 0)) & (WDPA %in% "*"))] <- "wild unprotected"
-
-EFG.dts$realm <- gsub("[0-9.]","",EFG.dts$EFG)
-EFG.dts$biome <- gsub("\\.[0-9]","",EFG.dts$EFG)
-
-EFG.dts$biome.lab <- biome.labels[pmatch(EFG.dts$biome,biome.labels,duplicates.ok=T)]
-
-EFG.dts$terrestrial <- EFG.dts$HFP %in% c("0","1")
-EFG.dts$marine <- EFG.dts$MCHI %in% c("0","1")
-
-EFG.dts[(EFG.dts$realm %in% c("T","TF")) & EFG.dts$marine & !EFG.dts$terrestrial,"clase"] <- "inconsistent"
-EFG.dts[(EFG.dts$realm %in% c("M")) & EFG.dts$terrestrial & !EFG.dts$marine ,"clase"] <- "inconsistent"
-
-EFG.dts %>% group_by(clase) %>% summarise(area=sum(area))
-
-## first test to see if we should exclude some EFGs
-
-EFG.dts %>%
-  pivot_wider(
-       id_cols = c("EFG","version"),
-       names_from = clase,
-       values_from = area,
-       values_fn = list(area=sum)
-     ) %>%        replace_na(list(degraded=0,protected=0,unknown=0,`wild unprotected`=0)) %>%
-          mutate(total=degraded+unknown+protected+`wild unprotected`) %>% mutate(degraded=degraded/total,protected=protected/total,`wild unprotected`=`wild unprotected`/total,unknown=unknown/total)     -> tmp
-
-
-## areas with no-data represent more than 5% of the total
-tmp %>% filter(unknown>0.05 ) %>% select(EFG,version,unknown,inconsistent)
-
-## inconsistencies larger than 5% (in this case terrestrial ecosystems overflowing marine areas?)
-tmp %>%  select(EFG,version,unknown,inconsistent,total) %>% mutate(inconsistent=inconsistent/total) %>% filter(inconsistent>0.05)
-
-
-## filtering by marine/terrestrial pixels fixes these problems
-
-EFG.dts %>% filter(realm %in% c("T") & terrestrial & version %in% "version-1.1.0") %>%
-     pivot_wider(
-       id_cols = c("biome.lab","EFG"),
-       names_from = clase,
-       values_from = area,
-       values_fn = list(area=sum)
-     ) %>%  mutate(total=degraded+protected+`wild unprotected`) %>% mutate(degraded=degraded*100/total,protected=protected*100/total,`wild unprotected`=`wild unprotected`*100/total)   -> d.ter.1
-
-
-EFG.dts %>% filter(realm %in% c("F","TF") & terrestrial & version %in% "version-1.1.0") %>%
-pivot_wider(
-  id_cols = c("biome.lab","EFG"),
-  names_from = clase,
-  values_from = area,
-  values_fn = list(area=sum)
-) %>%  mutate(total=degraded+protected+`wild unprotected`) %>% mutate(degraded=degraded*100/total,protected=protected*100/total,`wild unprotected`=`wild unprotected`*100/total)   -> d.fwt.1
-
-
-EFG.dts %>% filter(realm %in% c("MFT","FM",  "MT",  "TM") & terrestrial & version %in% "version-1.1.0") %>%
-     pivot_wider(
-       id_cols = c("biome.lab","EFG"),
-       names_from = clase,
-       values_from = area,
-       values_fn = list(area=sum)
-     ) %>%  mutate(total=degraded+protected+`wild unprotected`) %>% mutate(degraded=degraded*100/total,protected=protected*100/total,`wild unprotected`=`wild unprotected`*100/total)   -> d.tra.1
-
-
-
-EFG.dts %>% filter(realm %in% c("M", "MT", "MFT", "TM", "FM") & marine & version %in% "version-1.1.0") %>%
-pivot_wider(
-  id_cols = c("biome.lab","EFG"),
-  names_from = clase,
-  values_from = area,
-  values_fn = list(area=sum)
-) %>%  mutate(total=degraded+protected+`wild unprotected`) %>% mutate(degraded=degraded*100/total,protected=protected*100/total,`wild unprotected`=`wild unprotected`*100/total)   -> d.mar.1
-
-
-    ## EFG plots
-
-
-pplotT <- ggplot(d.ter.1, aes(degraded, protected, colour = biome.lab, shape=biome.lab)) +
-  geom_point( size = 2) +
-  scale_colour_manual(unique(d.ter.1$biome.lab),
-    values=d.legend$col[unique(match(d.ter.1$biome.lab,d.legend$lab))]) +
-  scale_shape_manual(unique(d.ter.1$biome.lab),
-    values=d.legend$pch[unique(match(d.ter.1$biome.lab,d.legend$lab))]) +
-    geom_hline(yintercept = 17, color="black",lty=3,lwd=.5) +
-    geom_vline(xintercept=70,color="black",lty=3,lwd=.5) + coord_cartesian(xlim=c(0,100),ylim=c(0,45))
-
-pplotF <- ggplot(d.fwt.1, aes(degraded, protected, color = biome.lab, shape=biome.lab)) +
-  geom_point( size = 2) +
-  scale_colour_manual(unique(d.fwt.1$biome.lab),
-    values=d.legend$col[unique(match(d.fwt.1$biome.lab,d.legend$lab))]) +
-  scale_shape_manual(unique(d.fwt.1$biome.lab),
-    values=d.legend$pch[unique(match(d.fwt.1$biome.lab,d.legend$lab))]) +
-    geom_hline(yintercept = 17, color="black",lty=3,lwd=.5) +
-    geom_vline(xintercept=70,color="black",lty=3,lwd=.5) + coord_cartesian(xlim=c(0,100),ylim=c(0,45))
-
-pplotR <- ggplot(d.tra.1, aes(degraded, protected, colour = biome.lab, shape=biome.lab)) +
-  geom_point( size = 2) +
-  scale_colour_manual(unique(d.tra.1$biome.lab),
-    values=d.legend$col[unique(match(d.tra.1$biome.lab,d.legend$lab))]) +
-  scale_shape_manual(unique(d.tra.1$biome.lab),
-    values=d.legend$pch[unique(match(d.tra.1$biome.lab,d.legend$lab))]) +
-    geom_hline(yintercept = 17, color="black",lty=3,lwd=.5) +
-    geom_vline(xintercept=70,color="black",lty=3,lwd=.5) + coord_cartesian(xlim=c(0,100),ylim=c(0,45))
-
-pplotM <- ggplot(d.mar.1, aes(degraded, protected, color = biome.lab, shape=biome.lab)) +
-  geom_point( size = 2) +
-  scale_colour_manual(unique(d.mar.1$biome.lab),
-    values=d.legend$col[unique(match(d.mar.1$biome.lab,d.legend$lab))]) +
-  scale_shape_manual(unique(d.mar.1$biome.lab),
-    values=d.legend$pch[unique(match(d.mar.1$biome.lab,d.legend$lab))]) +
-    geom_hline(yintercept = 17, color="black",lty=3,lwd=.5) +
-    geom_vline(xintercept=70,color="black",lty=3,lwd=.5) + coord_cartesian(xlim=c(0,100),ylim=c(0,45))
-
-plotM <- pplotM  + #geom_text_repel(aes(label = Code),colour=1,size=3) +
-  labs( x = "% exposed to high pressures", y = "% protected",colour = "Biomes",shape = "Biomes") +
+beautify.plot <- function(x) {
+x +  labs( x = "% exposed to high pressures", y = "% protected",colour = "Biomes",shape = "Biomes") +
   theme_classic() +
   theme(legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right",  legend.direction = "horizontal", legend.box.background = element_rect(), legend.margin = margin(0, 0, 0, 0),  legend.title=element_blank(), legend.text = element_text(size=6,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))
-  plotT <- pplotT  + #geom_text_repel(aes(label = Code),colour=1,size=3) +
-    labs( x = "% exposed to high pressures", y = "% protected",colour = "Biomes",shape = "Biomes") +
-    theme_classic() +
-    theme(legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right",  legend.direction = "horizontal", legend.box.background = element_rect(), legend.margin = margin(1, 1, 1, 1),  legend.title=element_blank(), legend.text = element_text(size=6,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))
 
-plotR <- pplotR  + #geom_text_repel(aes(label = Code),colour=1,size=3) +
-      labs( x = "% exposed to high pressures", y = "% protected",colour = "Biomes",shape = "Biomes") +
-      theme_classic() +
-      theme(legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right",  legend.direction = "horizontal", legend.box.background = element_rect(), legend.margin = margin(1, 1, 1, 1),  legend.title=element_blank(), legend.text = element_text(size=6,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))
+}
 
-plotF <- pplotF  + #geom_text_repel(aes(label = Code),colour=1,size=3) +
-  labs( x = "% exposed to high pressures", y = "% protected",colour = "Biomes",shape = "Biomes") +
-  theme_classic() +
-  theme(legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right",  legend.direction = "horizontal", legend.box.background = element_rect(), legend.margin = margin(1, 1, 1, 1),  legend.title=element_blank(), legend.text = element_text(size=6,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))
+plotT.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.0",g="Terrestrial") %>% beautify.plot()
+plotF.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.0",g="Freshwater") %>% beautify.plot()
+plotR.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.0",g="Transitional") %>% beautify.plot()
+plotM.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.0",g="Marine",h=10) %>% beautify.plot()
 
-##  ggarrange(plotT, plotF, plotM, ncol=2, nrow=2, common.legend = TRUE, legend="bottom")
-      ggarrange(plotT, plotF, plotR,plotM, ncol=2, nrow=2, common.legend = F)
+plotT.1 <- EFG.basic.plot(EFG.data,d.legend,v="version-1.1.0",g="Terrestrial") %>% beautify.plot()
+plotF.1 <- EFG.basic.plot(EFG.data,d.legend,v="version-1.1.0",g="Freshwater") %>% beautify.plot()
+plotR.1 <- EFG.basic.plot(EFG.data,d.legend,v="version-1.1.0",g="Transitional") %>% beautify.plot()
+plotM.1 <- EFG.basic.plot(EFG.data,d.legend,v="version-1.1.0",g="Marine",h=10) %>% beautify.plot()
+
+ggarrange(plotT.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
+  plotT.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
+  common.legend = TRUE, legend="bottom")
+
+ggsave(file='DegradedProtectedPlot-Terrestrial-both-versions.pdf',device=pdf)
+
+ggarrange(plotF.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
+  plotF.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
+  common.legend = TRUE, legend="bottom")
+
+ggsave(file='DegradedProtectedPlot-Freshwater-both-versions.pdf',device=pdf)
+
+ggarrange(plotR.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
+  plotR.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
+  common.legend = TRUE, legend="bottom")
+
+ggsave(file='DegradedProtectedPlot-Transitional-both-versions.pdf',device=pdf)
+
+ggarrange(plotM.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
+  plotM.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
+  common.legend = TRUE, legend="bottom")
+
+ggsave(file='DegradedProtectedPlot-Marine-both-versions.pdf',device=pdf)
+
 
 
 mi.legend <- d.legend
@@ -194,50 +86,44 @@ legEnd <- ggplot(mi.legend,aes(x=cc,y=rr,color=lab,shape=lab)) +
   scale_shape_manual(values=mi.legend$pch,labels=mi.legend$lab)+
   scale_color_manual(values=mi.legend$col,labels=mi.legend$lab)+
   geom_point( size = 2) +
-  geom_text(aes(label = lab), colour=1, size=2, nudge_x=.0012, hjust="left") +
+  geom_text(aes(label = lab), colour=1, size=2, nudge_x=.2, hjust="left") +
   labs( x = "", y = "") +
-  theme(legend.position = "none", panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  theme(legend.position = "right", panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   scale_y_continuous(breaks=NULL,label=NULL) +
   scale_x_continuous(breaks=NULL,label=NULL) +
   coord_cartesian(xlim=c(1,5),ylim=c(0,16))
 
 
-  library(cowplot)
-  legend <- get_legend(
-    # create some space to the left of the legend
-    legEnd + theme(legend.box.margin = margin(0, 0, 0, 12))
-  )
+    the.legend <- get_legend(
+      # create some space to the left of the legend
+      legEnd + theme(legend.box.margin = margin(0, 2, 0, 12)) + labs( colour = "Biomes",shape = "Biomes")
+    )
 
+
+  prow <- plot_grid(plotT , plotF , plotR , plotM , align = 'vh', labels = c("A", "B", "C","D"), hjust = -1, nrow = 2)
 
     prow <- plot_grid(
-      plotT ,
-      plotF ,
-      plotR ,
-      plotM ,
+      plotT.2 + theme(legend.position="none"),
+      plotF.2 + theme(legend.position="none"),
+      plotR.2 + theme(legend.position="none"),
+      plotM.2 + theme(legend.position="none"),
       align = 'vh',
       labels = c("A", "B", "C","D"),
       hjust = -1,
       nrow = 2
     )
 
+plot_grid(prow, the.legend, rel_widths = c(7, 3))
+ggsave(file='DegradedProtectedPlot-version-2.pdf',device=pdf)
+
+
+
 prow
 ggsave(file='DegradedProtectedPlot.pdf',device=pdf)
 
-  prow <- plot_grid(
-    plotT + theme(legend.position="none"),
-    plotF + theme(legend.position="none"),
-    plotR + theme(legend.position="none"),
-    plotM + theme(legend.position="none"),
-    align = 'vh',
-    labels = c("A", "B", "C","D"),
-    hjust = -1,
-    nrow = 2
-  )
 
   #prow
 
-  plot_grid(prow, legend, rel_widths = c(3, 1))
-            ## EFG plots
 
 ## now calculate for maps with version 2
 d1 <- with(subset(EFG.dts, version %in% "version-2.0.0" & (gsub("[0-9.]","",EFG) %in% c("T", "TF", "MT", "MFT", "TM")) & HFP %in% c("0","1")), tapply(area,list(EFG,clase),sum))
