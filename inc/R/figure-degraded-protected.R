@@ -50,6 +50,9 @@ plotF.1 <- EFG.basic.plot(EFG.data,d.legend,v="version-1.1.0",g="Freshwater") %>
 plotR.1 <- EFG.basic.plot(EFG.data,d.legend,v="version-1.1.0",g="Transitional") %>% beautify.plot()
 plotM.1 <- EFG.basic.plot(EFG.data,d.legend,v="version-1.1.0",g="Marine",h=10) %>% beautify.plot()
 
+
+# compare plots for each group with different versions of the maps
+
 ggarrange(plotT.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
   plotT.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
   common.legend = TRUE, legend="bottom")
@@ -75,11 +78,11 @@ ggarrange(plotM.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( ti
 ggsave(file='DegradedProtectedPlot-Marine-both-versions.pdf',device=pdf)
 
 
+# compose figure with subplots for each group
 
 mi.legend <- d.legend
 mi.legend$cc  <- rep(1,16)
 mi.legend$rr <-  16:1
-#data.frame(name=biome.labels, cc=rep(1,16), rr=16:1, pch=c(17,17,17,15,15,15,0,0,16,16,16,16,16,16,17,0),col=as.character(clr2[c(1,3,5, 6,1,3,1,4, 1:6,6,4)]),stringsAsFactors=F)
 
 legEnd <- ggplot(mi.legend,aes(x=cc,y=rr,color=lab,shape=lab)) +
   theme_minimal() +
@@ -94,35 +97,28 @@ legEnd <- ggplot(mi.legend,aes(x=cc,y=rr,color=lab,shape=lab)) +
   coord_cartesian(xlim=c(1,5),ylim=c(0,16))
 
 
-    the.legend <- get_legend(
-      # create some space to the left of the legend
-      legEnd + theme(legend.box.margin = margin(0, 2, 0, 12)) + labs( colour = "Biomes",shape = "Biomes")
-    )
+the.legend <- get_legend(
+  # create some space to the left of the legend
+  legEnd + theme(legend.box.margin = margin(0, 2, 0, 12)) + labs( colour = "Biomes",shape = "Biomes")
+)
 
 
-  prow <- plot_grid(plotT , plotF , plotR , plotM , align = 'vh', labels = c("A", "B", "C","D"), hjust = -1, nrow = 2)
+# prow <- plot_grid(plotT , plotF , plotR , plotM , align = 'vh', labels = c("A", "B", "C","D"), hjust = -1, nrow = 2)
 
-    prow <- plot_grid(
-      plotT.2 + theme(legend.position="none"),
-      plotF.2 + theme(legend.position="none"),
-      plotR.2 + theme(legend.position="none"),
-      plotM.2 + theme(legend.position="none"),
-      align = 'vh',
-      labels = c("A", "B", "C","D"),
-      hjust = -1,
-      nrow = 2
-    )
+prow <- plot_grid(
+  plotT.2 + theme(legend.position="none"),
+  plotF.2 + theme(legend.position="none"),
+  plotR.2 + theme(legend.position="none"),
+  plotM.2 + theme(legend.position="none"),
+  align = 'vh',
+  labels = c("A", "B", "C","D"),
+  hjust = -1,
+  nrow = 2
+)
 
 plot_grid(prow, the.legend, rel_widths = c(7, 3))
 ggsave(file='DegradedProtectedPlot-version-2.pdf',device=pdf)
 
-
-
-prow
-ggsave(file='DegradedProtectedPlot.pdf',device=pdf)
-
-
-  #prow
 
 
 ## now calculate for maps with version 2

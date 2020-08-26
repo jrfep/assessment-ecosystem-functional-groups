@@ -5,7 +5,7 @@ require(dplyr)
 require(tidyr)
 
 work.dir <- Sys.getenv("WORKDIR")
-Rdata.dir <- sprintf("%s/Rdata",Sys.getenv("SCRIPTDIR"))
+script.dir <- Sys.getenv("SCRIPTDIR")
 
 setwd(work.dir)
 system(sprintf("mkdir -p %s",Rdata.dir))
@@ -30,7 +30,7 @@ for (ver in versions) {
 }
 
 
-save(file=sprintf("%s/Degraded-protected-2013-all-versions.rda", Rdata.dir), maps.x.indicators)
+save(file=sprintf("%s/Rdata/Degraded-protected-2013-all-versions.rda", script.dir), maps.x.indicators)
 
 
 #choosing colors
@@ -126,4 +126,5 @@ EFG.dts %>%
               EFG.data
 
 
- save(file=sprintf("%s/Degraded-protected-2013-all-versions.rda", Rdata.dir), maps.x.indicators,EFG.data,d.legend)
+save(file=sprintf("%s/Rdata/Degraded-protected-2013-all-versions.rda", script.dir), maps.x.indicators,EFG.data,d.legend)
+save(file=sprintf("%s/apps/shiny/Rdata/summary.rda", script.dir), EFG.data,d.legend)
