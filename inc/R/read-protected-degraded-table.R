@@ -103,11 +103,6 @@ EFG.dts %>% pivot_wider(
  EFG.dts %>% group_by(clase) %>% summarise(area=sum(area))
 
 
- EFG.data %>% filter(realm %in% c("T") & terrestrial & !marine & version %in% "version-1.1.0")  -> d.ter.1
- EFG.data %>% filter(realm %in% c("F","TF") & terrestrial & !marine & version %in% "version-1.1.0")  -> d.fwt.1
- EFG.data %>% filter(realm %in% c("MFT","FM",  "MT",  "TM") & terrestrial & !marine & version %in% "version-1.1.0")  -> d.tra.1
- EFG.data %>% filter(realm %in% c("M", "MT", "MFT", "TM", "FM") & !terrestrial & marine  & version %in% "version-1.1.0")  -> d.mar.1
-
 
 EFG.dts %>%
   pivot_wider(

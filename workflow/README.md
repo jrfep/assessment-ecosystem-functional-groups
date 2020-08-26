@@ -21,7 +21,7 @@ To reproduce the entire workflow, you need to follow all these steps:
 1. Import or download spatial data from several sources and create a series of spatial databases for use with Grass GIS software for importing projected data sources.
 2. Creates and organizes the main spatial database for the analysis using Grass GIS.
 3. Cross tabulates map data with indicators of protection, degradation and transformation
-4. Perform analysis in R and Python and output figures
+4. Perform analysis in R and output figures
 5. Run shinyApp
 
 If you only want to reproduce the figures you can just run the *R* code in the *[apps](../apps)* folder (jump to step 5).
@@ -88,35 +88,7 @@ TO DO: Shiny app to show relationships between protected and degraded, with opti
 ```sh
 cd $WORKDIR
 
-R --vanilla -e "shiny::runApp('${SCRIPTDIR}/apps/shiny/app.R',host='149.171.173.203',port='4826')"
-R --vanilla -e "shiny::runApp('${SCRIPTDIR}/apps/shiny/app.R',host='localhost',port='4826')"
-
-```
-
-### Output figures
-
-TO DO: Select final layout of figures for manuscript .
-
-GGplots with R
-  Sankey plots with python
-
-```sh
-cd $WORKDIR
-mkdir -p $FIGDIR/sankeyplots/Terrestrial
-mkdir -p $FIGDIR/sankeyplots/Marine
-##mkdir -p $FIGDIR/sankeyplots-simple/Terrestrial
-rm DegradedProtectedSummary*
-
-## python script for generating sankey plots:
-python3 $SCRIPTDIR/inc/python/EFG-sankeyplots.py ## not working!
-
-## R script for summaries
-R --vanilla CMD BATCH $SCRIPTDIR/inc/R/read-degraded-protected-summaries.R
-
-mkdir -p $FIGDIR/manuscript
-mkdir -p $FIGDIR/supplement
-
-## R script for figures with ggplot.
-R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R ## not working!
+##R --vanilla -e "shiny::runApp('${SCRIPTDIR}/apps/shiny/app.R',host='149.171.173.203',port='4826')"
+R --vanilla -e "shiny::runApp('${SCRIPTDIR}/apps/shiny/app.R',host='127.0.0.1',port=4826)"
 
 ```
