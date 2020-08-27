@@ -3,7 +3,7 @@
 This file describes the steps for reproducing the analysis in *Appendix S5. Preliminary global assessment of pressures and protection of Ecosystem Functional Groups, from data import to the production of outputs and products* from Keith *et al.* (submitted)
 
 ## Environment and requirements
-This workflow has been creating using the following operating system and software:
+This workflow has been created using the following operating system and software:
 
 * Xubuntu 18.04
 * R 3.6.1
@@ -12,19 +12,21 @@ This workflow has been creating using the following operating system and softwar
 * GDAL 2.2.3
 * PostgreSQL 10.12 with postGIS extension
 
-To set-up programming environmental variables edit the files in folder `env/` and source them in a bash shell:
-`source env/terra.sh` and `source env/project-env.sh`. We use anaconda for our python configuration, so we need to use `conda deactivate` before starting grass, and `conda activate` before running python scripts.
+To set-up programming environmental variables edit the files in folder `env/` and source them in a bash shell: `source env/project-env.sh`. We use anaconda for our python configuration, so we need to use `conda deactivate` before starting grass, and `conda activate` before running python scripts.
 
 ## Workflow
 
-This workflow describes the following steps:
+To reproduce the entire workflow, you need to follow all these steps:
 
 1. Import or download spatial data from several sources and create a series of spatial databases for use with Grass GIS software for importing projected data sources.
 2. Creates and organizes the main spatial database for the analysis using Grass GIS.
 3. Cross tabulates map data with indicators of protection, degradation and transformation
-4. Perform analysis in R and Python and output figures
+4. Perform analysis in R and output figures
+5. Run shinyApp
 
-### Data import
+If you only want to reproduce the figures you can just run the *R* code in the *[apps](../apps)* folder (jump to step 5).
+
+### Step 1. Data import
 
 Start from the working directory defined in the programming environment above: `cd $WORKDIR`.
 
@@ -32,93 +34,61 @@ Download and import external data by following the instructions in the *[data](.
 
 Import indicative maps from the Zenodo repository for all ecosystems by following  *[these instructions](../data/Ecosystems-indicative-distribution.md)*.
 
-### Data set up for analysis
+### Step 2. Data set up for analysis
 
-Run these in a new GRASS GIS location to set up the data for analysis
+Run this short script to create a new GRASS GIS location and set up the data for analysis
 
 ```sh
 cd $WORKDIR
 conda deactivate
-grass --text -c $GISOUT/F1_1.IM.orig.tif $GISDB/ecosystem_analysis
+grass --text -c $GISOUT/version-1.1.0/F1.1.IM.orig_v1.0.tif $WORKDIR/ecosystem_analysis
 source $SCRIPTDIR/inc/grass/import-indicators-for-analysis.sh
-source $SCRIPTDIR/inc/grass/import-indicative-maps-for-analysis.sh
-
+for VERSION in version-1.1.0 version-2.0.0
+do
+  source $SCRIPTDIR/inc/grass/import-indicative-maps-for-analysis.sh
+done
 ```
 
 
-## Cross tabulation of map data in GRASS GIS
-
-First we need to transform the indicators of impact into binary variables (*degraded/non-degraded*).
-
-```sh
-g.mapset indicators
-g.mapsets PERMANENT,indicators,indicativeMaps
-
-##r.univar map=HFP2000i@indicators
-##r.univar map=MCHI2008@indicators
-r.quantile HFP2000i@indicators quantiles=6 ## median is 4
-r.quantile MCHI2008@indicators quantiles=6 ## median is 2.827246
-
-export k=2013
-export MT=4
-r.mapcalc --overwrite expression="HFP${k}x=if(HFP${k}i@indicators>${MT},1,0)"
-export MT=2.827246
-r.mapcalc --overwrite  expression="MCHI${k}x=if(MCHI${k}@indicators>${MT},1,0)"
-```
+## Step 3. Cross tabulation of map data in GRASS GIS
 
 Now we can source these scripts to calculate the cross-tabulation
 
 ```sh
-source $SCRIPTDIR/inc/grass/extract-protected-degraded-summaries-2013.sh
+grass --text -c $WORKDIR/ecosystem_analysis/PERMANENT
+for VERSION in version-1.1.0 version-2.0.0
+do
+  source $SCRIPTDIR/inc/grass/extract-protected-degraded-summaries-2013.sh
+done
 ```
-
-## Summary and analysis
 
 ### Read tables and summarize data
 
+Now we can read this table into an R-data file:
+
 ```sh
 Rscript --vanilla $SCRIPTDIR/inc/R/read-protected-degraded-table.R
-
-mkdir -p $SCRIPTDIR/output/figures
-
-## R script for figures with ggplot.
-R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R ## not working!
-
 ```
+
+## Step 4. Summary and analysis
+
+R script for figures with ggplot.
+
+```sh
+mkdir -p $SCRIPTDIR/output/figures
+R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R
+```
+
+## Step 5. Shiny App
 
 ### Interactive figures
 
 TO DO: Shiny app to show relationships between protected and degraded, with option to select original maps and newer version of maps.
 
 ```sh
-R --vanilla -e "shiny::runApp('${SCRIPTDIR}/apps/shiny/app.R',host='149.171.173.203',port='4826')"
-
-```
-
-### Output figures
-
-TO DO: Select final layout of figures for manuscript .
-
-GGplots with R
-  Sankey plots with python
-
-```sh
 cd $WORKDIR
-mkdir -p $FIGDIR/sankeyplots/Terrestrial
-mkdir -p $FIGDIR/sankeyplots/Marine
-##mkdir -p $FIGDIR/sankeyplots-simple/Terrestrial
-rm DegradedProtectedSummary*
 
-## python script for generating sankey plots:
-python3 $SCRIPTDIR/inc/python/EFG-sankeyplots.py ## not working!
-
-## R script for summaries
-R --vanilla CMD BATCH $SCRIPTDIR/inc/R/read-degraded-protected-summaries.R
-
-mkdir -p $FIGDIR/manuscript
-mkdir -p $FIGDIR/supplement
-
-## R script for figures with ggplot.
-R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R ## not working!
+##R --vanilla -e "shiny::runApp('${SCRIPTDIR}/apps/shiny/app.R',host='149.171.173.203',port='4826')"
+R --vanilla -e "shiny::runApp('${SCRIPTDIR}/apps/shiny/app.R',host='127.0.0.1',port=4826)"
 
 ```

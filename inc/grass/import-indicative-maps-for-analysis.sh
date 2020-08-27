@@ -4,12 +4,12 @@ if [[ $(g.gisenv get=LOCATION_NAME) != "ecosystem_analysis" ]]; then
     exit 1
 fi
 
-g.mapset -c indicativeMaps
+g.mapset -c $VERSION
 
-for k in $(ls $GISOUT/ | grep tif$)
+for k in $(ls $GISOUT/$VERSION | grep tif$)
 do
    export MAPNAME=$(echo $k | sed s/.tif$//g)
-   r.in.gdal input=${GISOUT}/${k} output=${MAPNAME} 
+   r.in.gdal input=${GISOUT}/${VERSION}/${k} output=${MAPNAME}
 done
 
 g.mapset PERMANENT

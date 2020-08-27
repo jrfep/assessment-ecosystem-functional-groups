@@ -7,7 +7,7 @@ require(plotly)
 
 # Load data
 load("Rdata/summary.rda")
-data <- d
+data <- EFG.data
 
 # Define UI
 ui <- fluidPage(##theme = shinytheme("lumen"),
@@ -18,11 +18,11 @@ ui <- fluidPage(##theme = shinytheme("lumen"),
 
       # Select type of trend to plot
       selectInput(inputId = "type", label = strong("Realm"),
-                  choices = unique(data$grp),
+                  choices = unique(data$group),
                   selected = "Terrestrial"),
       selectInput(inputId = "vers", label = strong("Version"),
                   choices = unique(data$version),
-                  selected = "v1.0")
+                  selected = "version-1.1.0")
                ),
 
     # Output: Description, lineplot, and reference
@@ -42,7 +42,7 @@ server <- function(input, output) {
   selected_grps <- reactive({
        data %>%
       filter(
-        grp == input$type
+        group == input$type
         ) %>%
        filter(
          version == input$vers
@@ -56,7 +56,7 @@ server <- function(input, output) {
     smbl = d.legend$pch[match(unique(selected_grps()$biome.lab), d.legend$lab)] #c(0,0,16,16,16,16,16,16,17,0)
     labs = d.legend$lab[match(unique(selected_grps()$biome.lab), d.legend$lab)]
     par(mar = c(4, 4, 1, 1))
-    p <-   ggplot(selected_grps(), aes(degraded, protected, color = biome, shape=biome,lab=Code)) +
+    p <-   ggplot(selected_grps(), aes(degraded, protected, color = biome, shape=biome,lab=EFG)) +
              scale_shape_manual("", values=smbl,labels=labs)+
              scale_color_manual("", values=clr2,labels=labs)+
              geom_point( size = 5) + #geom_text_repel(aes(label = Code),colour=1,size=3) +
