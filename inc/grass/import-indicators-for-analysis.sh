@@ -50,6 +50,10 @@ export k=2019
 export MT=0.066571
 r.mapcalc --overwrite expression="gHM${k}x=if(gHM${k}@indicators>${MT},1,0)"
 
+r.mapcalc expression="HFPdiff=HFP2013i-HFP2000i"
+r.stats -an HFPdiff
 
+r.mapcalc expression="MCHIdiff=MCHI2013-MCHI2008"
+r.stats -an MCHIdiff
 
 g.mapset PERMANENT
