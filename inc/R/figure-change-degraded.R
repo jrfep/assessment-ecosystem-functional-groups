@@ -1,50 +1,54 @@
 ##R --vanilla
 require(Hmisc)
-work.dir <- Sys.getenv("WORKDIR")
-fig.dir <- Sys.getenv("FIGDIR")
-Rdata.dir <- Sys.getenv("RDATADIR")
-script.dir <- Sys.getenv("SCRIPTDIR")
-setwd(work.dir)
 require(RColorBrewer)
 require(viridis)
-require(readxl)
+require(dplyr)
+require(tidyr)
+require(ggpubr)
 
-tbl <- read_excel(sprintf("%s/input/Table_Degraded_Protected_EFG.xlsx",script.dir))
-EFG.names <- gsub("1Trop","1 Trop",gsub("  "," ",gsub(" 1","1",tbl$nam...3)))
-names(EFG.names) <- sapply(EFG.names,function(x) strsplit(x," ")[[1]][1])
-EFG.names <- subset(EFG.names,!is.na(EFG.names))
+work.dir <- Sys.getenv("WORKDIR")
+script.dir <- Sys.getenv("SCRIPTDIR")
+setwd(work.dir)
+
+#tbl <- read_excel(sprintf("%s/input/Table_Degraded_Protected_EFG.xlsx",script.dir))
+#EFG.names <- gsub("1Trop","1 Trop",gsub("  "," ",gsub(" 1","1",tbl$nam...3)))
+#names(EFG.names) <- sapply(EFG.names,function(x) strsplit(x," ")[[1]][1])
+#EFG.names <- subset(EFG.names,!is.na(EFG.names))
 
 clrs <- ##brewer.pal(8,"Accent")
  brewer.pal(12,"Paired")
  clr2 <- ##brewer.pal(8,"Accent")
   viridis(6)
 
-load(file=sprintf("%s/Degraded-differences.rda", Rdata.dir))
-EFG.difs.t <-  subset(EFG.difs.t,!EFG %in% "T6_1")
+load(file=sprintf("%s/Rdata/Degraded-change-all-versions.rda", script.dir))
+# EFG.difs.t <-  subset(EFG.difs.t,!EFG %in% "T6_1")
 N <- 1000
 mu0 <- 0
 
 ## may need to do this with bootstrap rather than one single sample, otherwise results might change each time we run this:
 set.seed(2125387)
 
-##  51
-df <- data.frame()
-for (ee in grep("M",unique(EFG.difs.t$EFG),value=T,invert=T)) {
-   dts <- subset(EFG.difs.t,EFG %in% ee)
-   ##N <- sum(dts[,"area"]
-   ss <- sample(dts$HFPdiff,prob=dts$p.area,size=N,replace=T)
-   ##mu <- wtd.mean(dts[,"HFPdiff"], weights=dts[,"area"])
-   mu <-  mean(ss)
-   ##sg <- sqrt(wtd.var(dts[,"HFPdiff"], weights=dts[,"area"]))
-   sg <- sd(ss)
-   df <- rbind(df,
-      data.frame(EFG=gsub("_",".",ee),
-      mu,
-      sd=sg,
-      N)
-   )
-}
 
+df <- data.frame()
+for (ii in c("Terrestrial","Marine")) {
+  for (vv in c("version-1.1.0","version-2.0.1b")) {
+    for (ee in unique(subset(EFG.difs,indicator == ii & version %in% vv)$EFG)) {
+       dts <- subset(EFG.difs,indicator == ii & version %in% vv & EFG %in% ee)
+       ##N <- sum(dts[,"area"]
+       ss <- sample(dts$Diff,prob=dts$p.area,size=N,replace=T)
+       ##mu <- wtd.mean(dts[,"HFPdiff"], weights=dts[,"area"])
+       mu <-  mean(ss)
+       ##sg <- sqrt(wtd.var(dts[,"HFPdiff"], weights=dts[,"area"]))
+       sg <- sd(ss)
+       df <- rbind(df,
+          data.frame(EFG=gsub("_",".",ee),version=vv,indicator=ii,
+          mu,
+          sd=sg,
+          N)
+       )
+     }
+   }
+}
 ##https://en.wikipedia.org/wiki/Student%27s_t-test
 df$t <- (df$mu-mu0)/(df$sd/sqrt(df$N))
 df$p <- pt(df$t,df$N-1)
@@ -59,77 +63,15 @@ df$test <- df$p>.95
 
 df$Name <- EFG.names[as.character(df$EFG)]
 
-df1 <- df
-
-
- ##20
-df <- data.frame()
-for (ee in grep("^M[0-9]", unique(EFG.difs.m$EFG), value=T, invert=F)) {
-   dts <- subset(EFG.difs.m,EFG %in% ee)
-    ss <- sample(dts$MCHIdiff,prob=dts$p.area,size=N,replace=T)
-    mu <-  mean(ss)
-    sg <- sd(ss)
-    df <- rbind(df, data.frame(EFG=gsub("_",".",ee), mu, sd=sg, N)
-    )
- }
-
-    ##https://en.wikipedia.org/wiki/Student%27s_t-test
-    df$t <- (df$mu-mu0)/(df$sd/sqrt(df$N))
-    df$p <- pt(df$t,df$N-1)
-    df$se <- df$sd/sqrt(df$N)
-    df$mu.min <- df$mu-(1.96*df$se)
-    df$mu.max <- df$mu+(1.96*df$se)
-    df <- df[order(df$mu),]
-    df$x <- seq(along=df$EFG)
-df$test <- df$p<0.025 | df$p>0.975
-df$test <- df$p>.95
-
-
-df$Name <- EFG.names[as.character(df$EFG)]
-
-df2 <- df
-
-
-## 18
- df <- data.frame()
- for (ee in grep("M",unique(EFG.difs.t$EFG),value=T,invert=F)) {
-    dts <- subset(EFG.difs.t,EFG %in% ee)
-    ss <- sample(dts$HFPdiff,prob=dts$p.area,size=N,replace=T)
-  mu <-  mean(ss)
-  sg <- sd(ss)
-  df <- rbind(df, data.frame(EFG=gsub("_",".",ee), mu, sd=sg, N, ind="HFP")
-  )
-    }
- for (ee in grep("^M[0-9]",unique(EFG.difs.m$EFG),value=T,invert=T)) {
-    dts <- subset(EFG.difs.m,EFG %in% ee)
-    ss <- sample(dts$MCHIdiff,prob=dts$p.area,size=N,replace=T)
-  mu <-  mean(ss)
-  sg <- sd(ss)
-  df <- rbind(df, data.frame(EFG=gsub("_",".",ee), mu, sd=sg, N, ind="MCHI")
-  )
-   }
-
-   ##https://en.wikipedia.org/wiki/Student%27s_t-test
-  df$t <- (df$mu-mu0)/(df$sd/sqrt(df$N))
-  df$p <- pt(df$t,df$N-1)
-  df$se <- df$sd/sqrt(df$N)
-  df$mu.min <- df$mu-(1.96*df$se)
-  df$mu.max <- df$mu+(1.96*df$se)
-  df <- df[order(df$mu),]
-  df$x <- seq(along=df$EFG)
-df$test <- df$p<0.025 | df$p>0.975
-df$test <- df$p>.95
-
-df$Name <- EFG.names[as.character(df$EFG)]
 
  oo <- with(df,aggregate(mu,list(EFG),mean))
 oo <- oo[order(oo$x),]
 df$EFG <- factor(df$EFG,levels=oo$Group.1)
 
-df3 <- df
 ## this is for David
 ## write.csv(file="Table_Change_Impact_EFG_Transitional.csv", df)
 
+df1 <- subset(df,version %in% "version-2.0.1b" & indicator %in% "Terrestrial")
 plotT <- ggplot(df1, aes(x=x, y=mu, shape=test)) +
  scale_shape_manual( values=c(1,16)) +
 geom_errorbar(aes(ymin=mu.min, ymax=mu.max), width=.1, colour=clr2[5]) +
@@ -164,7 +106,6 @@ plotNT <- ggplot(df3, aes(x=Name, y=mu,colour=ind,  shape=test)) +
 
   #
 
-require(ggpubr)
 
 rightside <-  ggarrange( plotM, plotNT,
                              labels = c("b", "c"),

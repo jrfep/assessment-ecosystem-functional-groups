@@ -39,10 +39,10 @@ x +  labs( x = "% exposed to high pressures", y = "% protected",colour = "Biomes
 
 }
 
-plotT.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.0",g="Terrestrial") %>% beautify.plot()
-plotF.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.0",g="Freshwater") %>% beautify.plot()
-plotR.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.0",g="Transitional") %>% beautify.plot()
-plotM.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.0",g="Marine",h=10) %>% beautify.plot()
+plotT.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.1b",g="Terrestrial") %>% beautify.plot()
+plotF.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.1b",g="Freshwater") %>% beautify.plot()
+plotR.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.1b",g="Transitional") %>% beautify.plot()
+plotM.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.1b",g="Marine",h=10) %>% beautify.plot()
 
 plotT.1 <- EFG.basic.plot(EFG.data,d.legend,v="version-1.1.0",g="Terrestrial") %>% beautify.plot()
 plotF.1 <- EFG.basic.plot(EFG.data,d.legend,v="version-1.1.0",g="Freshwater") %>% beautify.plot()
@@ -55,22 +55,22 @@ plotM.1 <- EFG.basic.plot(EFG.data,d.legend,v="version-1.1.0",g="Marine",h=10) %
 ggarrange(plotT.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
   plotT.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
   common.legend = TRUE, legend="bottom")
-# ggsave(file='DegradedProtectedPlot-Terrestrial-both-versions.pdf',device=pdf)
+ggsave(file='DegradedProtectedPlot-Terrestrial-both-versions.pdf',device=pdf)
 
 ggarrange(plotF.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
   plotF.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
   common.legend = TRUE, legend="bottom")
-# ggsave(file='DegradedProtectedPlot-Freshwater-both-versions.pdf',device=pdf)
+ggsave(file='DegradedProtectedPlot-Freshwater-both-versions.pdf',device=pdf)
 
 ggarrange(plotR.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
   plotR.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
   common.legend = TRUE, legend="bottom")
-# ggsave(file='DegradedProtectedPlot-Transitional-both-versions.pdf',device=pdf)
+ggsave(file='DegradedProtectedPlot-Transitional-both-versions.pdf',device=pdf)
 
 ggarrange(plotM.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
   plotM.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
   common.legend = TRUE, legend="bottom")
-# ggsave(file='DegradedProtectedPlot-Marine-both-versions.pdf',device=pdf)
+ggsave(file='DegradedProtectedPlot-Marine-both-versions.pdf',device=pdf)
 
 
 # compose figure with subplots for each group
