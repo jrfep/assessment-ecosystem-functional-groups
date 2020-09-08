@@ -17,8 +17,8 @@ And
 
 It is possible to automate download from the Zenodo repository using the API. For example, using the *R* package **[zen4R](https://github.com/eblondel/zen4R)**. We need to retrieve the Zenodo API token from a file in the home directory or from an environment variable.
 
-```R
-R --vanilla
+```r
+##R --vanilla
 require(zen4R)
 
 ##output directory
@@ -33,7 +33,7 @@ zenodo <- ZenodoManager$new(
    logger = "INFO"
 )
 
-versions <- c("version-1.1.0"="10.5281/zenodo.3958622","version-2.0.0"="10.5281/zenodo.3958934")
+versions <- c("version-1.1.0"="10.5281/zenodo.3958622", "version-2.0.1b"="10.5281/zenodo.4018314")
 for (j in 1:2) {
   system(sprintf("mkdir -p %s/%s",gis.outdir,names(versions)[j]))
   setwd(sprintf("%s/%s",gis.outdir,names(versions)[j]))
@@ -50,15 +50,15 @@ q()
 Now we can go through the folders and decompress the files:
 
 ```sh
-for version in 1.1.0 2.0.0
+for version in 1.1.0 2.0.1b
 do
   cd $GISOUT/version-$version
   for arch in $(ls *tar.bz2)
   do
     tar -xjvf $arch
-    rm $arch
+  ##  rm $arch
   done
 done
 ```
 
-All GeoTIFF files should be now in these two folders.
+All GeoTIFF files should be now in these three folders.

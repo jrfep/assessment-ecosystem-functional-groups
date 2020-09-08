@@ -20,7 +20,7 @@ load(sprintf("%s/Degraded-protected-2013-all-versions.rda", Rdata.dir))
 
 ## code for `degraded vs protected` plots
 
-EFG.basic.plot <- function(dataset,y,v="version-2.0.0",g="Terrestrial",h=17) {
+EFG.basic.plot <- function(dataset,y,v="version-2.0.1b",g="Terrestrial",h=17) {
   x <- dataset %>% filter(group %in% g & version %in% v)
   ggplot(x, aes(degraded, protected, colour = biome.lab, shape=biome.lab)) +
     geom_point( size = 2) +

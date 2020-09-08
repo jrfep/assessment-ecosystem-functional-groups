@@ -8,7 +8,7 @@ work.dir <- Sys.getenv("WORKDIR")
 script.dir <- Sys.getenv("SCRIPTDIR")
 
 setwd(work.dir)
-system(sprintf("mkdir -p %s",Rdata.dir))
+system(sprintf("mkdir -p %s/Rdata/",script.dir))
 
 ## output of inc/gras/rcross/combined-indicators.sh
 versions <- dir(sprintf("%s/output",work.dir))
