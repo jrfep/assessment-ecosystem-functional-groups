@@ -3,12 +3,20 @@ require(RColorBrewer)
 require(viridis)
 require(dplyr)
 require(tidyr)
+require(xml2)
 
 work.dir <- Sys.getenv("WORKDIR")
 script.dir <- Sys.getenv("SCRIPTDIR")
 
 setwd(work.dir)
 system(sprintf("mkdir -p %s/Rdata/",script.dir))
+
+
+EFG.names <- c()
+for (arch in dir(sprintf("%s/indicative-maps/version-2.0.1b/",work.dir),"xml",full.names=T)) {
+  x <- read_xml(arch)
+  EFG.names <- c(EFG.names,xml_text(xml_find_all(x,"//Short-name")))
+}
 
 ## output of inc/gras/rcross/combined-indicators.sh
 versions <- dir(sprintf("%s/output",work.dir))
@@ -30,7 +38,7 @@ for (ver in versions) {
 }
 
 
-save(file=sprintf("%s/Rdata/Degraded-protected-2013-all-versions.rda", script.dir), maps.x.indicators)
+save(file=sprintf("%s/Rdata/Degraded-protected-2013-all-versions.rda", script.dir), maps.x.indicators, EFG.names)
 
 
 #choosing colors
@@ -121,5 +129,5 @@ EFG.dts %>%
               EFG.data
 
 
-save(file=sprintf("%s/Rdata/Degraded-protected-2013-all-versions.rda", script.dir), maps.x.indicators,EFG.data,d.legend)
+save(file=sprintf("%s/Rdata/Degraded-protected-2013-all-versions.rda", script.dir), maps.x.indicators,EFG.data,d.legend, EFG.names)
 save(file=sprintf("%s/apps/shiny/Rdata/summary.rda", script.dir), EFG.data,d.legend)

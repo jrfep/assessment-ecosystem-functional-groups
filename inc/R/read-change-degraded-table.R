@@ -1,11 +1,19 @@
 #!R --vanilla
 require(dplyr)
+require(xml2)
+
 
 work.dir <- Sys.getenv("WORKDIR")
 script.dir <- Sys.getenv("SCRIPTDIR")
 
 setwd(work.dir)
 system(sprintf("mkdir -p %s/Rdata/",script.dir))
+
+EFG.names <- c()
+for (arch in dir(sprintf("%s/indicative-maps/version-2.0.1b/",work.dir),"xml",full.names=T)) {
+  x <- read_xml(arch)
+  EFG.names <- c(EFG.names,xml_text(xml_find_all(x,"//Short-name")))
+}
 
 ## output of inc/gras/rcross/combined-indicators.sh
 versions <- dir(sprintf("%s/output",work.dir))
@@ -46,4 +54,4 @@ for (ver in versions) {
  EFG.difs <- EFG.difs %>% filter(EFG %in% slc)
 
 
-save(file=sprintf("%s/Rdata/Degraded-change-all-versions.rda", script.dir), EFG.difs)
+save(file=sprintf("%s/Rdata/Degraded-change-all-versions.rda", script.dir), EFG.difs, EFG.names)

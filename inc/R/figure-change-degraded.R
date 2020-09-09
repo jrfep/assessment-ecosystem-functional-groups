@@ -85,7 +85,9 @@ plotT <- ggplot(df1, aes(x=x, y=mu, shape=test)) +
  scale_shape_manual( values=c(1,16)) +
 geom_errorbar(aes(ymin=mu.min, ymax=mu.max), width=.1, colour=clr2[5]) +
 geom_point(colour=clr2[5]) + labs( x = "", y = "change in pressure index")  + theme_classic() + coord_flip(xlim=c(1,nrow(df1))) + geom_hline(yintercept=0,color="black",lty=3,lwd=.5) +
- scale_x_continuous(breaks=1:nrow(df1),label=df1$Name) + theme(legend.position = "none", legend.text = element_text(size=5,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))
+ scale_x_continuous(breaks=1:nrow(df1),label=df1$Name) + theme(legend.position = "none", legend.text = element_text(size=5,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))+
+  annotate("text", y=c(-.15,+.15), x=c(0,0),
+    label=c("less pressure","more pressure"), vjust=+0.5, color="black", size=2)
  ## + annotate("text", y=c(-.1,+.2)[2], x=nrow(df),    label=c("less pressure","more pressure")[2], vjust=+0.5, color="black", size=3)
 ## this is for David
 ##write.csv(file="Table_Change_Impact_EFG_T.csv",df)
@@ -107,9 +109,9 @@ plotNT <- ggplot(df3, aes(x=Name, y=mu,colour=indicator,  shape=test)) +
  scale_shape_manual( values=c(1,16)) +
  geom_errorbar(aes(ymin=mu.min, ymax=mu.max), width=.1, position=pd) +
  geom_point(position=pd) + labs( x = "", y = "change in pressure index",colour="pressure index")  + theme_classic() + coord_flip(xlim=c(0,11)) + geom_hline(yintercept=0,color="black",lty=3,lwd=.5) + theme(legend.position = "none", legend.text = element_text(size=8,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1)) +
- scale_color_manual(values=clr2[c(5,2)]) +
-  annotate("text", y=c(-.35,+.35), x=c(0,0),
-    label=c("less pressure","more pressure"), vjust=+0.5, color="black", size=2)
+ scale_color_manual(values=clr2[c(5,2)]) #+
+#  annotate("text", y=c(-.1,+.15), x=c(0,0),
+#    label=c("less\npressure","more\npressure"), vjust=+0.5, color="black", size=2)
 ##  scale_x_continuous(breaks=1:nrow(df),label=df$EFG)
 
 

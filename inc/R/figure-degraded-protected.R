@@ -139,3 +139,5 @@ if (!file.exists(output.fig)) {
   dev.off()
 
 }
+
+EFG.data %>% filter(version %in% 'version-2.0.1b') %>% select(group,biome.lab,EFG,version,protected,`wild unprotected`,degraded,total) %>% write.csv(file='Summary-table-degraded-protected.csv')
