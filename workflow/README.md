@@ -56,6 +56,9 @@ done
 Now we can source these scripts to calculate the cross-tabulation
 
 ```sh
+cd $WORKDIR
+conda deactivate
+
 grass --text -c $WORKDIR/ecosystem_analysis/PERMANENT
 for VERSION in version-1.1.0 version-2.0.1b
 do
