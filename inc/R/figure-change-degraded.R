@@ -133,6 +133,6 @@ fig.height = 247/2
 
 point.size = 7
 
-pdf(sprintf("%s/manuscript/Figure4_EFG_2column_3panels_change_impact_indices_corrected.pdf",fig.dir),width= fig.width/inch.to.mm,height=fig.height/inch.to.mm,pointsize=point.size)
+pdf(sprintf("%s/Figure4_EFG_2column_3panels_change_impact_indices_corrected.pdf",work.dir),width= fig.width/inch.to.mm,height=fig.height/inch.to.mm,pointsize=point.size)
 Fig4
 dev.off()

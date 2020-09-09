@@ -55,7 +55,7 @@ clr2 <- inferno(6)
  ## Ice and snow groups in the southern hemisphere are not well covered by human impact variables
  slc <- slc[!slc %in% c("T6.1","T6.2","M2.5","F2.10")]
  ## Subterranean EFG are not well covered by the protection/degradation variables
- slc <- slc[!slc %in% !grepl("^S",slc)]
+ slc <- slc[!grepl("^S",slc)]
 
 
  EFG.dts <- maps.x.indicators %>% filter(EFG %in% slc)
