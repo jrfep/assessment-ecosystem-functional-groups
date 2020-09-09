@@ -60,9 +60,9 @@ df$x <- seq(along=df$EFG)
 df$test <- df$p<0.025 | df$p>0.975
 df$test <- df$p>.95
 
-
-#df$Name <- EFG.names[as.character(df$EFG)]
-df$Name <- df$EFG
+df$Name <- EFG.names[pmatch(sprintf("%s ",df$EFG),EFG.names,duplicates.ok=T)]
+df$Name <- gsub("shrublands and grasslands","shrubs/grass",df$Name)
+df$Name <- gsub("and bays","",df$Name)
 
  oo <- with(df,aggregate(mu,list(EFG),mean))
 oo <- oo[order(oo$x),]
@@ -86,8 +86,8 @@ plotT <- ggplot(df1, aes(x=x, y=mu, shape=test)) +
 geom_errorbar(aes(ymin=mu.min, ymax=mu.max), width=.1, colour=clr2[5]) +
 geom_point(colour=clr2[5]) + labs( x = "", y = "change in pressure index")  + theme_classic() + coord_flip(xlim=c(1,nrow(df1))) + geom_hline(yintercept=0,color="black",lty=3,lwd=.5) +
  scale_x_continuous(breaks=1:nrow(df1),label=df1$Name) + theme(legend.position = "none", legend.text = element_text(size=5,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))+
-  annotate("text", y=c(-.15,+.15), x=c(0,0),
-    label=c("less pressure","more pressure"), vjust=+0.5, color="black", size=2)
+  annotate("text", y=c(-.15,+.25), x=c(0,0),
+    label=c("less","more pressure"), vjust=+0.5, color="black", size=2)
  ## + annotate("text", y=c(-.1,+.2)[2], x=nrow(df),    label=c("less pressure","more pressure")[2], vjust=+0.5, color="black", size=3)
 ## this is for David
 ##write.csv(file="Table_Change_Impact_EFG_T.csv",df)
@@ -135,6 +135,6 @@ fig.height = 247/2
 
 point.size = 7
 
-pdf(sprintf("%s/Figure4_EFG_2column_3panels_change_impact_indices_corrected.pdf",work.dir),width= fig.width/inch.to.mm,height=fig.height/inch.to.mm,pointsize=point.size)
+pdf(sprintf("%s/Figure4_EFG_2column_3panels_change_impact_indices.pdf",work.dir),width= fig.width/inch.to.mm,height=fig.height/inch.to.mm,pointsize=point.size)
 Fig4
 dev.off()

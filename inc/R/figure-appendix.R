@@ -15,6 +15,8 @@ setwd(work.dir)
 load(sprintf("%s/Rdata/Degraded-protected-2013-all-versions.rda", script.dir))
 
 
+clrs <- brewer.pal(12,"Paired")
+
  slc <- unique(maps.x.indicators$EFG)
  ## exclude the anthropogenic
  slc <- slc[!(grepl("^F3.?",slc) | grepl("^T7.?",slc) | grepl("^M4.?",slc) | grepl("^MT3.?",slc) | grepl("^S2.?",slc) | grepl("^SF2.?",slc))]
@@ -30,13 +32,9 @@ load(sprintf("%s/Rdata/Degraded-protected-2013-all-versions.rda", script.dir))
  EFG.dts[(gsub("[0-9_]","",EFG.dts$EFG) %in% c("M")) & EFG.dts$HFP %in% c("0","1") & EFG.dts$MCHI %in% c("*") ,"clase"] <- "inconsistent"
 
  EFG.dts %>% select(clase) %>% table
-EFG.dts$Name <- EFG.dts$EFG
-
-d1 <- with(subset(EFG.dts,version %in% "version-2.0.1b"), tapply(area,list(EFG,clase),sum))
-d1 <- data.frame(d1[,!colnames(d1) %in% c("inconsistent","unknown")])
-d1$Name <- rownames(d1)
-##d1 <- data.frame(d1*100/rowSums(d1))
-##d1$Names <- gsub("_",".",rownames(d1))
+EFG.dts$Name <- EFG.names[pmatch(sprintf("%s ",EFG.dts$EFG),EFG.names,duplicates.ok=T)]
+EFG.dts$Name <- gsub("shrublands and grasslands","shrubs/grass",EFG.dts$Name)
+EFG.dts$Name <- gsub("and bays","",EFG.dts$Name)
 
 
 
@@ -56,8 +54,6 @@ sumWld <- with(subset(EFG.dts,version %in% "version-2.0.1b" & clase %in% c("wild
 aggregate(area,list(Name),sum))
 out.of.plot2 <- subset(sumWld,x > 3.0e7)
 
-##98-as.numeric(out.of.plot$Name)
-##98-as.numeric(out.of.plot2$Name)
 pdf(sprintf("%s/Figure_S5_1_BarPlots.pdf",work.dir), width=7,height=9)
 
 plotAll+theme_classic()+
@@ -70,7 +66,9 @@ guides(fill=guide_legend(keyheight=.5,keywidth=.5)) +
 theme(legend.position="top",legend.justification=c(-.1,0), axis.text=element_text(size=7),legend.title = element_text(size = 6),
   legend.text = element_text(size = 6))
 
-##dev.off()
+dev.off()
+
+
 
 
 

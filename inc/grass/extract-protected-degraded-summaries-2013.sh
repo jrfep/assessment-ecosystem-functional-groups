@@ -13,11 +13,11 @@ done
 for k in $(g.list type=rast mapset=$VERSION pattern=*[TF]*IM*)
 do
 	r.stats -aA input=HFPdiff@indicators,${k}@${VERSION} output=${WORKDIR}/output/${VERSION}/Degraded_Change_Terrestrial_${k}.txt
+	r.stats -aA input=HFP2013i@indicators,${k}@${VERSION} output=${WORKDIR}/output/${VERSION}/HFP_Terrestrial_${k}.txt
 done
-
-
 
 for k in $(g.list type=rast mapset=$VERSION pattern=*M*IM*)
 do
 	r.stats -aA input=MCHIdiff@indicators,${k}@${VERSION} output=${WORKDIR}/output/${VERSION}/Degraded_Change_Marine_${k}.txt
+	r.stats -aA input=MCHI2013i@indicators,${k}@${VERSION} output=${WORKDIR}/output/${VERSION}/MCHI_Marine_${k}.txt
 done
