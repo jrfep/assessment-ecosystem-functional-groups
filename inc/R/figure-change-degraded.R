@@ -61,8 +61,8 @@ df$test <- df$p<0.025 | df$p>0.975
 df$test <- df$p>.95
 
 
-df$Name <- EFG.names[as.character(df$EFG)]
-
+#df$Name <- EFG.names[as.character(df$EFG)]
+df$Name <- df$EFG
 
  oo <- with(df,aggregate(mu,list(EFG),mean))
 oo <- oo[order(oo$x),]
@@ -72,10 +72,19 @@ df$EFG <- factor(df$EFG,levels=oo$Group.1)
 ## write.csv(file="Table_Change_Impact_EFG_Transitional.csv", df)
 
 df1 <- subset(df,version %in% "version-2.0.1b" & indicator %in% "Terrestrial")
+df2 <- subset(df,version %in% "version-2.0.1b" & indicator %in% "Marine")
+
+slc <- df2$EFG [df2$EFG %in% df1$EFG]
+df1 <- subset(df1,!EFG %in% slc)
+df2 <- subset(df2,!EFG %in% slc)
+df1$x <- seq(along=df1$EFG)
+df2$x <- seq(along=df2$EFG)
+df3 <- subset(df,version %in% "version-2.0.1b" & EFG %in% slc)
+
 plotT <- ggplot(df1, aes(x=x, y=mu, shape=test)) +
  scale_shape_manual( values=c(1,16)) +
 geom_errorbar(aes(ymin=mu.min, ymax=mu.max), width=.1, colour=clr2[5]) +
-geom_point(colour=clr2[5]) + labs( x = "", y = "change in pressure index")  + theme_classic() + coord_flip(xlim=c(1,50)) + geom_hline(yintercept=0,color="black",lty=3,lwd=.5) +
+geom_point(colour=clr2[5]) + labs( x = "", y = "change in pressure index")  + theme_classic() + coord_flip(xlim=c(1,nrow(df1))) + geom_hline(yintercept=0,color="black",lty=3,lwd=.5) +
  scale_x_continuous(breaks=1:nrow(df1),label=df1$Name) + theme(legend.position = "none", legend.text = element_text(size=5,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1))
  ## + annotate("text", y=c(-.1,+.2)[2], x=nrow(df),    label=c("less pressure","more pressure")[2], vjust=+0.5, color="black", size=3)
 ## this is for David
@@ -94,7 +103,7 @@ geom_point(colour=clr2[5]) + labs( x = "", y = "change in pressure index")  + th
 
 pd <- position_dodge(0.75) # move them .05 to the left and right
 
-plotNT <- ggplot(df3, aes(x=Name, y=mu,colour=ind,  shape=test)) +
+plotNT <- ggplot(df3, aes(x=Name, y=mu,colour=indicator,  shape=test)) +
  scale_shape_manual( values=c(1,16)) +
  geom_errorbar(aes(ymin=mu.min, ymax=mu.max), width=.1, position=pd) +
  geom_point(position=pd) + labs( x = "", y = "change in pressure index",colour="pressure index")  + theme_classic() + coord_flip(xlim=c(0,11)) + geom_hline(yintercept=0,color="black",lty=3,lwd=.5) + theme(legend.position = "none", legend.text = element_text(size=8,angle=0,colour ="black"), axis.title = element_text(size = 8), axis.text = element_text(size = 7), panel.border=element_rect(colour="black",fill=NA,size=1)) +

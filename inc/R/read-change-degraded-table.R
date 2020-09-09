@@ -1,5 +1,5 @@
 #!R --vanilla
-
+require(dplyr)
 
 work.dir <- Sys.getenv("WORKDIR")
 script.dir <- Sys.getenv("SCRIPTDIR")
@@ -31,8 +31,19 @@ for (ver in versions) {
   }
 }
 
-table(EFG.difs$EFG,EFG.difs$ver)
+#table(EFG.difs$EFG,EFG.difs$ver)
 
+
+ slc <- unique(EFG.difs$EFG)
+ ## exclude the anthropogenic
+ slc <- slc[!(grepl("^F3.?",slc) | grepl("^T7.?",slc) | grepl("^M4.?",slc) | grepl("^MT3.?",slc) | grepl("^S2.?",slc) | grepl("^SF2.?",slc))]
+ ## Ice and snow groups in the southern hemisphere are not well covered by human impact variables
+ slc <- slc[!slc %in% c("T6.1","T6.2","M2.5","F2.10")]
+ ## Subterranean EFG are not well covered by the protection/degradation variables
+ slc <- slc[!slc %in% !grepl("^S",slc)]
+
+
+ EFG.difs <- EFG.difs %>% filter(EFG %in% slc)
 
 
 save(file=sprintf("%s/Rdata/Degraded-change-all-versions.rda", script.dir), EFG.difs)

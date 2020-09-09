@@ -69,6 +69,7 @@ Now we can read this table into an R-data file:
 
 ```sh
 Rscript --vanilla $SCRIPTDIR/inc/R/read-protected-degraded-table.R
+Rscript --vanilla $SCRIPTDIR/inc/R/read-change-degraded-table.R
 ```
 
 ## Step 4. Summary and analysis
