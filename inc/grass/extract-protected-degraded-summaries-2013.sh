@@ -22,6 +22,11 @@ do
 	then
 		r.stats -aA input=HFP2013i@indicators,${k}@${VERSION} output=${WORKDIR}/output/${VERSION}/HFP_Terrestrial_${k}.txt
 	fi
+
+	if [ ! -f ${WORKDIR}/output/${VERSION}/Transform_Terrestrial_${k}.txt ]
+	then
+			r.stats -aA input=p_cult@Anthromes,p_irrig@Anthromes,p_past@Anthromes,p_rice@Anthromes,p_urban@Anthromes,WDPA@WDPA,WDPA_2013@indicators,HFP2013x@HFP,${k}@${VERSION} output=${WORKDIR}/output/${VERSION}/Transform_Terrestrial_${k}.txt
+		fi
 done
 
 for k in $(g.list type=rast mapset=$VERSION pattern=*M*IM*)
