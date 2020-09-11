@@ -25,7 +25,7 @@ do
 
 	if [ ! -f ${WORKDIR}/output/${VERSION}/Transform_Terrestrial_${k}.txt ]
 	then
-			r.stats -aA input=p_cult@Anthromes,p_irrig@Anthromes,p_past@Anthromes,p_rice@Anthromes,p_urban@Anthromes,WDPA@WDPA,WDPA_2013@indicators,HFP2013x@HFP,${k}@${VERSION} output=${WORKDIR}/output/${VERSION}/Transform_Terrestrial_${k}.txt
+			r.stats -aA input=p_cult@indicators,p_irrig@indicators,p_past@indicators,p_rice@indicators,p_urban@indicators,WDPA_2013@indicators,HFP2013x@indicators,${k}@${VERSION} output=${WORKDIR}/output/${VERSION}/Transform_Terrestrial_${k}.txt
 		fi
 done
 
