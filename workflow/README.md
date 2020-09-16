@@ -81,6 +81,7 @@ Rscript --vanilla $SCRIPTDIR/inc/R/read-impact-index-table.R
 R script for figures with ggplot.
 
 ```sh
+
 mkdir -p $WORKDIR/output/figures/sankeyplots
 R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R
 ```

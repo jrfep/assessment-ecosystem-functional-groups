@@ -55,23 +55,34 @@ plotM.1 <- EFG.basic.plot(EFG.data,d.legend,v="version-1.1.0",g="Marine",h=10) %
 ggarrange(plotT.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
   plotT.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
   common.legend = TRUE, legend="bottom")
-ggsave(file='DegradedProtectedPlot-Terrestrial-both-versions.pdf',device=pdf)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Terrestrial-both-versions.pdf',work.dir),device=pdf)
 
 ggarrange(plotF.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
   plotF.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
   common.legend = TRUE, legend="bottom")
-ggsave(file='DegradedProtectedPlot-Freshwater-both-versions.pdf',device=pdf)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Freshwater-both-versions.pdf',work.dir),device=pdf)
 
 ggarrange(plotR.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
   plotR.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
   common.legend = TRUE, legend="bottom")
-ggsave(file='DegradedProtectedPlot-Transitional-both-versions.pdf',device=pdf)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Transitional-both-versions.pdf',work.dir),device=pdf)
 
 ggarrange(plotM.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
   plotM.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
   common.legend = TRUE, legend="bottom")
-ggsave(file='DegradedProtectedPlot-Marine-both-versions.pdf',device=pdf)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Marine-both-versions.pdf',work.dir),device=pdf)
 
+plotF.2+ geom_text_repel(aes(label = EFG),colour=1,size=3)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Freshwater.pdf',work.dir),device=pdf)
+
+plotT.2+ geom_text_repel(aes(label = EFG),colour=1,size=3)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Terrestrial.pdf',work.dir),device=pdf)
+
+plotR.2+ geom_text_repel(aes(label = EFG),colour=1,size=3)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Transitional.pdf',work.dir),device=pdf)
+
+plotM.2+ geom_text_repel(aes(label = EFG),colour=1,size=3)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Marine.pdf',work.dir),device=pdf)
 
 # compose figure with subplots for each group
 
@@ -118,7 +129,7 @@ plot_grid(prow, the.legend, rel_widths = c(7, 3))
 ### shiny::runApp(sprintf('%s/app.R',shiny.dir))
 
 ## Composite figure for manuscript
-output.fig <- sprintf("%s/Figure3_EFG_4panels_year2013_WDPAall_noLabels.pdf",work.dir)
+output.fig <- sprintf("%s/output/figures/Figure3_EFG_4panels_year2013_WDPAall_noLabels.pdf",work.dir)
 if (!file.exists(output.fig)) {
 
   ## 300 dpi

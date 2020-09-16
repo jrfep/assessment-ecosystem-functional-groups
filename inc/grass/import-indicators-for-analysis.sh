@@ -12,8 +12,10 @@ g.region n=90 s=-90 w=-179.975 e=179.975 res=00:01:00
 for k in 2000 2013
 do
    r.proj input=HFP${k}i output=HFP${k}i location=HFP mapset=PERMANENT dbase=$GISDB/raw
-   r.proj input=WDPA_${k} output=WDPA_${k} location=WDPA mapset=PERMANENT dbase=$GISDB/raw
 done
+
+## only for 2013
+r.proj input=WDPA_${k} output=WDPA_${k} location=WDPA mapset=PERMANENT dbase=$GISDB/raw
 
 for k in 2008 2013
 do
@@ -27,9 +29,9 @@ do
 done
 
 ## modified habitat class (MHC)
-r.proj input=gHM2019 output=gHM2019 location=gHM mapset=PERMANENT dbase=$GISDB/raw
+#r.proj input=gHM2019 output=gHM2019 location=gHM mapset=PERMANENT dbase=$GISDB/raw
 ## modified habitat class (MHC)
-r.proj input=modified_habitat output=MHC location=Modified-Habitat-2020 mapset=PERMANENT dbase=$GISDB/raw
+#r.proj input=modified_habitat output=MHC location=Modified-Habitat-2020 mapset=PERMANENT dbase=$GISDB/raw
 
 
 ##We need to transform the indicators of impact into binary variables (*degraded/non-degraded*).
