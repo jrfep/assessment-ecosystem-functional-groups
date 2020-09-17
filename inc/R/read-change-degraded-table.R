@@ -46,7 +46,7 @@ for (ver in versions) {
  ## exclude the anthropogenic
  slc <- slc[!(grepl("^F3.?",slc) | grepl("^T7.?",slc) | grepl("^M4.?",slc) | grepl("^MT3.?",slc) | grepl("^S2.?",slc) | grepl("^SF2.?",slc))]
  ## Ice and snow groups in the southern hemisphere are not well covered by human impact variables
- slc <- slc[!slc %in% c("T6.1","T6.2","M2.5","F2.10")]
+ # slc <- slc[!slc %in% c("T6.1","T6.2","M2.5","F2.10")]
  ## Subterranean EFG are not well covered by the protection/degradation variables
  slc <- slc[!grepl("^S",slc)]
 

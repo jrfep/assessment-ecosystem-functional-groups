@@ -84,6 +84,16 @@ R script for figures with ggplot.
 
 mkdir -p $WORKDIR/output/figures/sankeyplots
 R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R
+R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-change-degraded.R
+R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-barplot-all.R
+R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-boxplots.R
+```
+
+Python script for sankey plots.
+
+```sh
+conda activate
+python3 $SCRIPTDIR/inc/python/figure-sankey-plots.py
 ```
 
 ## Step 5. Shiny App

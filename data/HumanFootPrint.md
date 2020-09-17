@@ -19,8 +19,11 @@ We use the latest version of HFP shared by James Watson
 
 ```sh
 ##wget --continue ... # Data shared by James Watson and Oscar Venter, not publicly available yet
+conda deactivate
 
 grass --text -c hfp_meris_int/hfp2000_merisINT.tif $GISDB/raw/HFP
+##grass --gui $GISDB/raw/HFP/PERMANENT
+
 ##  use r.external to link the file (avoiding duplicated data files)
 for k in 2000 2005 2010 2013
 do
