@@ -29,7 +29,7 @@ EFG.basic.plot <- function(dataset,y,v="version-2.0.1b",g="Terrestrial",h=17) {
     scale_shape_manual(unique(x$biome.lab),
       values=y$pch[unique(match(x$biome.lab,y$lab))]) +
       geom_hline(yintercept = h, color="black",lty=3,lwd=.5) +
-      geom_vline(xintercept=70,color="black",lty=3,lwd=.5) + coord_cartesian(xlim=c(0,100),ylim=c(0,30))
+      geom_vline(xintercept=70,color="black",lty=3,lwd=.5) + coord_cartesian(xlim=c(0,100),ylim=c(0,100))
 }
 
 beautify.plot <- function(x) {
@@ -110,19 +110,23 @@ the.legend <- get_legend(
 
 
 # prow <- plot_grid(plotT , plotF , plotR , plotM , align = 'vh', labels = c("A", "B", "C","D"), hjust = -1, nrow = 2)
+brks <- c(0,10,20,30)
+lbls <- c(0,10,20,'')
+brks <- lbls <- lblsx <- c(1,5,10,20,40,70,100)
+lbls[length(lbls)] <- ''
 
 prow <- plot_grid(
-  plotT.2 + theme(legend.position="none") + scale_y_continuous( breaks=c(0,10,20,30),labels=c(0,10,20,'')),
-  plotF.2 + theme(legend.position="none") + scale_y_continuous( breaks=c(0,10,20,30),labels=c(0,10,20,'')),
-  plotR.2 + theme(legend.position="none") + scale_y_continuous( breaks=c(0,10,20,30),labels=c(0,10,20,'')),
-  plotM.2 + theme(legend.position="none") + scale_y_continuous( breaks=c(0,10,20,30),labels=c(0,10,20,'')),
+  plotT.2 + theme(legend.position="none") + scale_y_sqrt( breaks=brks,labels=lbls) + scale_x_sqrt( breaks=brks,labels=lblsx),
+  plotF.2 + theme(legend.position="none") + scale_y_sqrt( breaks=brks,labels=lbls) + scale_x_sqrt( breaks=brks,labels=lblsx),
+  plotR.2 + theme(legend.position="none") + scale_y_sqrt( breaks=brks,labels=lbls) + scale_x_sqrt( breaks=brks,labels=lblsx),
+  plotM.2 + theme(legend.position="none") + scale_y_sqrt( breaks=brks,labels=lbls) + scale_x_sqrt( breaks=brks,labels=lblsx),##scale_y_continuous( breaks=brks,labels=lbls),
   align = 'vh',
   labels = c("A", "B", "C","D"),
   hjust = -1,
   nrow = 2
 )
 
-plot_grid(prow, the.legend, rel_widths = c(7, 3))
+#plot_grid(prow, the.legend, rel_widths = c(7, 3))
 # ggsave(file='DegradedProtectedPlot-version-2.pdf',device=pdf)
 
 # for interactive version run:
@@ -130,7 +134,7 @@ plot_grid(prow, the.legend, rel_widths = c(7, 3))
 
 ## Composite figure for manuscript
 output.fig <- sprintf("%s/output/figures/Figure3_EFG_4panels_year2013_WDPAall_noLabels.pdf",work.dir)
-if (!file.exists(output.fig)) {
+#if (!file.exists(output.fig)) {
 
   ## 300 dpi
   ## width: 89 mm (single column) and 183 mm (double column)
@@ -149,6 +153,6 @@ if (!file.exists(output.fig)) {
   plot_grid(prow, the.legend, rel_widths = c(70, 30))
   dev.off()
 
-}
+#}
 
 EFG.data %>% filter(version %in% 'version-2.0.1b') %>% select(group,biome.lab,EFG,version,protected,`wild unprotected`,degraded,total) %>% write.csv(file='Summary-table-degraded-protected.csv')

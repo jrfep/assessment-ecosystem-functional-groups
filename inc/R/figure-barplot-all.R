@@ -54,7 +54,7 @@ sumWld <- with(subset(EFG.dts,version %in% "version-2.0.1b" & clase %in% c("wild
 aggregate(area,list(Name),sum))
 out.of.plot2 <- subset(sumWld,x > 3.0e7)
 
-pdf(sprintf("%s/Figure_S5_1_BarPlots.pdf",work.dir), width=7,height=9)
+pdf(sprintf("%s/output/figures/Figure_S5_1_BarPlots.pdf",work.dir), width=7,height=9)
 
 plotAll+theme_classic()+
 scale_y_continuous(breaks=seq(-3e7, 3e7,by=5e6),label=abs(seq(-30, 30,by=5)))+

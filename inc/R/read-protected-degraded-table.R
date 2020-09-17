@@ -75,7 +75,7 @@ clr2 <- inferno(6)
  EFG.dts$clase[with(EFG.dts,((HFP %in% 0) | (MCHI %in% 0)) & (WDPA %in% "*"))] <- "wild unprotected"
 
  EFG.dts$realm <- gsub("[0-9.]","",EFG.dts$EFG)
- EFG.dts$biome <- gsub("\\.[0-9]","",EFG.dts$EFG)
+ EFG.dts$biome <- gsub("\\.[0-9]+","",EFG.dts$EFG)
 
  EFG.dts$biome.lab <- biome.labels[pmatch(EFG.dts$biome,biome.labels,duplicates.ok=T)]
 

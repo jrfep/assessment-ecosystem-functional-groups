@@ -68,7 +68,7 @@ lzMCHI <- t(lzMCHI)
 colnames(lzMCHI) <-  unique(dts$EFG)
 rownames(lzMCHI) <- NULL
 
-pdf("Figure_S5_3_BoxPlots.pdf",width=9,height=7)
+pdf(sprintf("%s/output/figures/Figure_S5_3_BoxPlots.pdf",work.dir),width=9,height=7)
 
 layout(matrix(1:2,ncol=2))
 
