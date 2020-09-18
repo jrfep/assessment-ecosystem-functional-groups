@@ -71,6 +71,7 @@ done
 Now we can read this table into an R-data file:
 
 ```sh
+cd $WORKDIR
 Rscript --vanilla $SCRIPTDIR/inc/R/read-protected-degraded-table.R
 Rscript --vanilla $SCRIPTDIR/inc/R/read-change-degraded-table.R
 Rscript --vanilla $SCRIPTDIR/inc/R/read-impact-index-table.R
@@ -81,6 +82,7 @@ Rscript --vanilla $SCRIPTDIR/inc/R/read-impact-index-table.R
 R script for figures with ggplot.
 
 ```sh
+cd $WORKDIR
 
 mkdir -p $WORKDIR/output/figures/sankeyplots
 R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R

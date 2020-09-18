@@ -21,7 +21,7 @@ clrs <- brewer.pal(12,"Paired")
  ## exclude the anthropogenic
  slc <- slc[!(grepl("^F3.?",slc) | grepl("^T7.?",slc) | grepl("^M4.?",slc) | grepl("^MT3.?",slc) | grepl("^S2.?",slc) | grepl("^SF2.?",slc))]
  ## Ice and snow groups in the southern hemisphere are not well covered by human impact variables
- slc <- slc[!slc %in% c("T6.1","T6.2","M2.5","F2.10")]
+ ##slc <- slc[!slc %in% c("T6.1","T6.2","M2.5","F2.10")]
  ## Subterranean EFG are not well covered by the protection/degradation variables
  slc <- slc[!grepl("^S",slc)]
 
@@ -58,9 +58,9 @@ pdf(sprintf("%s/output/figures/Figure_S5_1_BarPlots.pdf",work.dir), width=7,heig
 
 plotAll+theme_classic()+
 scale_y_continuous(breaks=seq(-3e7, 3e7,by=5e6),label=abs(seq(-30, 30,by=5)))+
-annotate("text", y=-2.995e7, x=82-as.numeric(rownames(out.of.plot)),
+annotate("text", y=-2.995e7, x=length(slc)+1-as.numeric(rownames(out.of.plot)),
   label=sprintf("%0.1f",out.of.plot$x/1e6), vjust=+0.5, color="black", size=1.9)+
-  annotate("text", y=2.995e7, x=82-as.numeric(rownames(out.of.plot2)),
+  annotate("text", y=2.995e7, x=length(slc)+1-as.numeric(rownames(out.of.plot2)),
     label=sprintf("%0.1f",out.of.plot2$x/1e6), vjust=+0.5, color="black", size=1.9)+
 guides(fill=guide_legend(keyheight=.5,keywidth=.5)) +
 theme(legend.position="top",legend.justification=c(-.1,0), axis.text=element_text(size=7),legend.title = element_text(size = 6),

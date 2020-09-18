@@ -110,16 +110,16 @@ the.legend <- get_legend(
 
 
 # prow <- plot_grid(plotT , plotF , plotR , plotM , align = 'vh', labels = c("A", "B", "C","D"), hjust = -1, nrow = 2)
-brks <- c(0,10,20,30)
-lbls <- c(0,10,20,'')
-brks <- lbls <- lblsx <- c(1,5,10,20,40,70,100)
-lbls[length(lbls)] <- ''
+brksx <- lblsx <- seq(0,100,length=5)
+brksy <- lblsy <- c(0,10,20,30)
+lblsy[length(lblsy)] <- ''
+##brks <- lbls <- lblsx <- c(1,5,10,20,40,70,100)
 
 prow <- plot_grid(
-  plotT.2 + theme(legend.position="none") + scale_y_sqrt( breaks=brks,labels=lbls) + scale_x_sqrt( breaks=brks,labels=lblsx),
-  plotF.2 + theme(legend.position="none") + scale_y_sqrt( breaks=brks,labels=lbls) + scale_x_sqrt( breaks=brks,labels=lblsx),
-  plotR.2 + theme(legend.position="none") + scale_y_sqrt( breaks=brks,labels=lbls) + scale_x_sqrt( breaks=brks,labels=lblsx),
-  plotM.2 + theme(legend.position="none") + scale_y_sqrt( breaks=brks,labels=lbls) + scale_x_sqrt( breaks=brks,labels=lblsx),##scale_y_continuous( breaks=brks,labels=lbls),
+  plotT.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy) + coord_cartesian(xlim=c(10,90),ylim=c(0,30)),##scale_y_sqrt( breaks=brks,labels=lbls) + scale_x_sqrt( breaks=brks,labels=lblsx),
+  plotF.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy)+ coord_cartesian(xlim=c(10,90),ylim=c(0,30)),
+  plotR.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy)+ coord_cartesian(xlim=c(10,90),ylim=c(0,30)),
+  plotM.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy)+ coord_cartesian(xlim=c(10,90),ylim=c(0,30)),
   align = 'vh',
   labels = c("A", "B", "C","D"),
   hjust = -1,
@@ -133,7 +133,7 @@ prow <- plot_grid(
 ### shiny::runApp(sprintf('%s/app.R',shiny.dir))
 
 ## Composite figure for manuscript
-output.fig <- sprintf("%s/output/figures/Figure3_EFG_4panels_year2013_WDPAall_noLabels.pdf",work.dir)
+output.fig <- sprintf("%s/output/figures/Figure3_EFG_4panels_year2013_noLabels.pdf",work.dir)
 #if (!file.exists(output.fig)) {
 
   ## 300 dpi
