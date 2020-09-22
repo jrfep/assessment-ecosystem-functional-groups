@@ -69,7 +69,7 @@ oo <- oo[order(oo$x),]
 df$EFG <- factor(df$EFG,levels=oo$Group.1)
 
 ## this is for David
-## write.csv(file="Table_Change_Impact_EFG_Transitional.csv", df)
+ write.csv(file="Summary-table-Change-Impact.csv", subset(df,version %in% "version-2.0.1b"))
 
 df1 <- subset(df,version %in% "version-2.0.1b" & indicator %in% "Terrestrial")
 df2 <- subset(df,version %in% "version-2.0.1b" & indicator %in% "Marine")

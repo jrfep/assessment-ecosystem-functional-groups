@@ -105,3 +105,10 @@ for (k in 1:length(ys)) {
   	}
 
     dev.off()
+
+tmp <- t(lzHFP)
+colnames(tmp) <- c("zscore-weighted-quantile-0.025", "zscore-weighted-quantile-0.25", "zscore-weighted-quantile-0.5", "zscore-weighted-quantile-0.75", "zscore-weighted-quantile-0.975","zscore-weighted-mean")
+write.csv(file="Summary-table-quantiles-HFP.csv",tmp)
+tmp <- t(lzMCHI)
+colnames(tmp) <- c("zscore-weighted-quantile-0.025", "zscore-weighted-quantile-0.25", "zscore-weighted-quantile-0.5", "zscore-weighted-quantile-0.75", "zscore-weighted-quantile-0.975","zscore-weighted-mean")
+write.csv(file="Summary-table-quantiles-MCHI.csv",tmp)
