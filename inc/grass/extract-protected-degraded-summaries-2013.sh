@@ -16,7 +16,7 @@ do
 	fi
 	if [ ! -f ${WORKDIR}/output/${VERSION}/Protected_year_${k}.txt ]
 	then
-		r.stats -aA input=WDPA_yr@indicators,${k}@${VERSION} output=${WORKDIR}/output/${VERSION}/Protected_year_${k}.txt
+		r.stats -aA input=WDPA_year@indicators,${k}@${VERSION} output=${WORKDIR}/output/${VERSION}/Protected_year_${k}.txt
 	fi
 done
 

@@ -20,6 +20,12 @@ done
 r.proj input=WDPA_2013 output=WDPA_pre2013 location=WDPA mapset=PERMANENT dbase=$GISDB/raw
 r.mapcalc --overwrite expression="WDPA_2013=if(isnull(WDPA_pre2013@indicators),if(Antarctica@indicators,1,null()),1)"
 
+r.proj input=WDPA_all output=WDPA_preall location=WDPA mapset=PERMANENT dbase=$GISDB/raw
+r.mapcalc --overwrite expression="WDPA_all=if(isnull(WDPA_preall@indicators),if(Antarctica@indicators,1,null()),1)"
+
+r.proj input=WDPA_year output=WDPA_preyr location=WDPA mapset=PERMANENT dbase=$GISDB/raw
+r.mapcalc --overwrite expression="WDPA_year=if(isnull(WDPA_preyr@indicators),if(Antarctica@indicators,1991,null()),WDPA_preyr@indicators)"
+
 for k in 2008 2013
 do
    r.proj input=MCHI${k} output=MCHI${k} location=MCHI mapset=PERMANENT dbase=$GISDB/raw
