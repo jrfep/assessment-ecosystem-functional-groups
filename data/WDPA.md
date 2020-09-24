@@ -86,4 +86,6 @@ for k in WDPA_all WDPA_2013
 do
    v.to.rast input=${k} output=${k} use=val val=1
 done
+
+v.to.rast input=WDPA_all output=WDPA_year use=attr attribute_column=status_yr memory=3000
 ```

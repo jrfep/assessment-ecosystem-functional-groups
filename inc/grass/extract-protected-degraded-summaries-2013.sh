@@ -10,6 +10,14 @@ do
 	then
 		r.stats -aA input=WDPA_2013@indicators,HFP2013x@indicators,MCHI2013x@indicators,${k}@${VERSION} output=${WORKDIR}/output/${VERSION}/Protected_Degraded_2013_${k}.txt
 	fi
+	if [ ! -f ${WORKDIR}/output/${VERSION}/Protected_Degraded_all_${k}.txt ]
+	then
+		r.stats -aA input=WDPA_all@indicators,HFP2013x@indicators,MCHI2013x@indicators,${k}@${VERSION} output=${WORKDIR}/output/${VERSION}/Protected_Degraded_all_${k}.txt
+	fi
+	if [ ! -f ${WORKDIR}/output/${VERSION}/Protected_year_${k}.txt ]
+	then
+		r.stats -aA input=WDPA_yr@indicators,${k}@${VERSION} output=${WORKDIR}/output/${VERSION}/Protected_year_${k}.txt
+	fi
 done
 
 for k in $(g.list type=rast mapset=$VERSION pattern=*[TF]*IM*)

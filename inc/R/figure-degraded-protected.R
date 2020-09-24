@@ -72,17 +72,30 @@ ggarrange(plotM.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( ti
   common.legend = TRUE, legend="bottom")
 ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Marine-both-versions.pdf',work.dir),device=pdf)
 
-plotF.2+ geom_text_repel(aes(label = EFG),colour=1,size=3)
-ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Freshwater.pdf',work.dir),device=pdf)
+fig.res = 300
+inch.to.mm = 25.4
+fig.width = 150
+fig.height = 150
+point.size = 12
 
-plotT.2+ geom_text_repel(aes(label = EFG),colour=1,size=3)
-ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Terrestrial.pdf',work.dir),device=pdf)
+pdf(sprintf('%s/output/figures/DegradedProtectedPlot-Freshwater.pdf',work.dir), width= fig.width/inch.to.mm, height=fig.height/inch.to.mm, pointsize=point.size)
+plotF.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + theme(legend.position = "top",legend.text = element_text(size=10,angle=0,colour ="black"), axis.title = element_text(size = 12), axis.text = element_text(size = 10))
+dev.off()
 
-plotR.2+ geom_text_repel(aes(label = EFG),colour=1,size=3)
-ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Transitional.pdf',work.dir),device=pdf)
 
-plotM.2+ geom_text_repel(aes(label = EFG),colour=1,size=3)
-ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Marine.pdf',work.dir),device=pdf)
+pdf(sprintf('%s/output/figures/DegradedProtectedPlot-Terrestrial.pdf',work.dir), width= fig.width/inch.to.mm, height=fig.height/inch.to.mm, pointsize=point.size)
+plotT.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + theme(legend.position = "top", legend.text = element_text(size=10,angle=0,colour ="black"), axis.title = element_text(size = 12), axis.text = element_text(size = 10)) + guides(colour=guide_legend(ncol=2))
+dev.off()
+
+
+pdf(sprintf('%s/output/figures/DegradedProtectedPlot-Transitional.pdf',work.dir), width= fig.width/inch.to.mm, height=fig.height/inch.to.mm, pointsize=point.size)
+plotR.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + theme(legend.position = "top", legend.text = element_text(size=10,angle=0,colour ="black"), axis.title = element_text(size = 12), axis.text = element_text(size = 10)) + guides(colour=guide_legend(ncol=3))
+dev.off()
+
+pdf(sprintf('%s/output/figures/DegradedProtectedPlot-Marine.pdf',work.dir), width= fig.width/inch.to.mm, height=fig.height/inch.to.mm, pointsize=point.size)
+plotM.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + theme(legend.position = "top",legend.text = element_text(size=10,angle=0,colour ="black"), axis.title = element_text(size = 12), axis.text = element_text(size = 10)) + guides(colour=guide_legend(ncol=2))
+dev.off()
+
 
 # compose figure with subplots for each group
 
