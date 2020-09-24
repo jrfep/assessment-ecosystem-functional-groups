@@ -42,8 +42,9 @@ Run this short script to create a new GRASS GIS location and set up the data for
 cd $WORKDIR
 conda deactivate
 grass --text -c $GISOUT/version-1.1.0/F1.1.IM.orig_v1.0.tif $WORKDIR/ecosystem_analysis
+#grass --text $WORKDIR/ecosystem_analysis/PERMANENT
 source $SCRIPTDIR/inc/grass/import-indicators-for-analysis.sh
-for VERSION in version-1.1.0 version-2.0.0
+for VERSION in version-1.1.0 version-2.0.1b
 do
   source $SCRIPTDIR/inc/grass/import-indicative-maps-for-analysis.sh
 done
@@ -55,8 +56,11 @@ done
 Now we can source these scripts to calculate the cross-tabulation
 
 ```sh
+cd $WORKDIR
+conda deactivate
+
 grass --text -c $WORKDIR/ecosystem_analysis/PERMANENT
-for VERSION in version-1.1.0 version-2.0.0
+for VERSION in version-1.1.0 version-2.0.1b
 do
   source $SCRIPTDIR/inc/grass/extract-protected-degraded-summaries-2013.sh
 done
@@ -67,7 +71,10 @@ done
 Now we can read this table into an R-data file:
 
 ```sh
+cd $WORKDIR
 Rscript --vanilla $SCRIPTDIR/inc/R/read-protected-degraded-table.R
+Rscript --vanilla $SCRIPTDIR/inc/R/read-change-degraded-table.R
+Rscript --vanilla $SCRIPTDIR/inc/R/read-impact-index-table.R
 ```
 
 ## Step 4. Summary and analysis
@@ -75,8 +82,20 @@ Rscript --vanilla $SCRIPTDIR/inc/R/read-protected-degraded-table.R
 R script for figures with ggplot.
 
 ```sh
-mkdir -p $SCRIPTDIR/output/figures
+cd $WORKDIR
+
+mkdir -p $WORKDIR/output/figures/sankeyplots
 R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R
+R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-change-degraded.R
+R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-barplot-all.R
+R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-boxplots.R
+```
+
+Python script for sankey plots.
+
+```sh
+conda activate
+python3 $SCRIPTDIR/inc/python/figure-sankey-plots.py
 ```
 
 ## Step 5. Shiny App

@@ -3,12 +3,20 @@ require(RColorBrewer)
 require(viridis)
 require(dplyr)
 require(tidyr)
+require(xml2)
 
 work.dir <- Sys.getenv("WORKDIR")
 script.dir <- Sys.getenv("SCRIPTDIR")
 
 setwd(work.dir)
-system(sprintf("mkdir -p %s",Rdata.dir))
+system(sprintf("mkdir -p %s/Rdata/",script.dir))
+
+
+EFG.names <- c()
+for (arch in dir(sprintf("%s/indicative-maps/version-2.0.1b/",work.dir),"xml",full.names=T)) {
+  x <- read_xml(arch)
+  EFG.names <- c(EFG.names,xml_text(xml_find_all(x,"//Short-name")))
+}
 
 ## output of inc/gras/rcross/combined-indicators.sh
 versions <- dir(sprintf("%s/output",work.dir))
@@ -30,7 +38,7 @@ for (ver in versions) {
 }
 
 
-save(file=sprintf("%s/Rdata/Degraded-protected-2013-all-versions.rda", script.dir), maps.x.indicators)
+save(file=sprintf("%s/Rdata/Degraded-protected-2013-all-versions.rda", script.dir), maps.x.indicators, EFG.names)
 
 
 #choosing colors
@@ -53,9 +61,9 @@ clr2 <- inferno(6)
  ## exclude the anthropogenic
  slc <- slc[!(grepl("^F3.?",slc) | grepl("^T7.?",slc) | grepl("^M4.?",slc) | grepl("^MT3.?",slc) | grepl("^S2.?",slc) | grepl("^SF2.?",slc))]
  ## Ice and snow groups in the southern hemisphere are not well covered by human impact variables
- slc <- slc[!slc %in% c("T6.1","T6.2","M2.5","F2.10")]
+ # slc <- slc[!slc %in% c("T6.1","T6.2","M2.5","F2.10")]
  ## Subterranean EFG are not well covered by the protection/degradation variables
- slc <- slc[!slc %in% !grepl("^S",slc)]
+ slc <- slc[!grepl("^S",slc)]
 
 
  EFG.dts <- maps.x.indicators %>% filter(EFG %in% slc)
@@ -67,7 +75,7 @@ clr2 <- inferno(6)
  EFG.dts$clase[with(EFG.dts,((HFP %in% 0) | (MCHI %in% 0)) & (WDPA %in% "*"))] <- "wild unprotected"
 
  EFG.dts$realm <- gsub("[0-9.]","",EFG.dts$EFG)
- EFG.dts$biome <- gsub("\\.[0-9]","",EFG.dts$EFG)
+ EFG.dts$biome <- gsub("\\.[0-9]+","",EFG.dts$EFG)
 
  EFG.dts$biome.lab <- biome.labels[pmatch(EFG.dts$biome,biome.labels,duplicates.ok=T)]
 
@@ -121,5 +129,5 @@ EFG.dts %>%
               EFG.data
 
 
-save(file=sprintf("%s/Rdata/Degraded-protected-2013-all-versions.rda", script.dir), maps.x.indicators,EFG.data,d.legend)
+save(file=sprintf("%s/Rdata/Degraded-protected-2013-all-versions.rda", script.dir), maps.x.indicators,EFG.data,d.legend, EFG.names)
 save(file=sprintf("%s/apps/shiny/Rdata/summary.rda", script.dir), EFG.data,d.legend)

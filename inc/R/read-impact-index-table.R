@@ -1,0 +1,72 @@
+#!R --vanilla
+require(dplyr)
+require(xml2)
+
+
+work.dir <- Sys.getenv("WORKDIR")
+script.dir <- Sys.getenv("SCRIPTDIR")
+
+setwd(work.dir)
+system(sprintf("mkdir -p %s/Rdata/",script.dir))
+
+EFG.names <- c()
+for (arch in dir(sprintf("%s/indicative-maps/version-2.0.1b/",work.dir),"xml",full.names=T)) {
+  x <- read_xml(arch)
+  EFG.names <- c(EFG.names,xml_text(xml_find_all(x,"//Short-name")))
+}
+
+
+versions <- dir(sprintf("%s/output",work.dir))
+
+EFG.idx <- data.frame()
+for (ver in versions) {
+  archs <- dir(sprintf("%s/output/%s",work.dir,ver),pattern="HFP_Terrestrial_")
+  for (arch in archs) {
+     dts <- read.table(sprintf("%s/output/%s/%s",work.dir,ver,arch), col.names=c("idx", "map","area_m2"), stringsAsFactors=FALSE)
+     if (nrow(dts)>0) {
+       dts$map_code <- gsub("HFP_Terrestrial_|.txt","",basename(arch))
+       dts$EFG <- strsplit(dts$map_code,".IM.")[[1]][1]
+       dts$version <- ver
+       dts$index <- "HFP2013"
+       dts$area <- dts$area_m2/1e6
+       dts$p.area <- dts$area_m2/sum(dts$area_m2)
+       dts <- subset(dts,!map %in% "*" & !idx %in% "*")
+       dts$idx <- as.numeric(dts$idx)
+       EFG.idx <- rbind(EFG.idx,dts)
+     } else {
+       cat(sprintf("%s > %s is empty",ver, arch))
+     }
+  }
+  archs <- dir(sprintf("%s/output/%s",work.dir,ver),pattern="MCHI_Marine_")
+  for (arch in archs) {
+     dts <- read.table(sprintf("%s/output/%s/%s",work.dir,ver,arch), col.names=c("idx", "map","area_m2"), stringsAsFactors=FALSE)
+     if (nrow(dts)>0) {
+       dts$map_code <- gsub("MCHI_Marine_|.txt","",basename(arch))
+       dts$EFG <- strsplit(dts$map_code,".IM.")[[1]][1]
+       dts$version <- ver
+       dts$index <- "MCHI2013"
+       dts$area <- dts$area_m2/1e6
+       dts$p.area <- dts$area_m2/sum(dts$area_m2)
+       dts <- subset(dts,!map %in% "*" & !idx %in% "*")
+       dts$idx <- as.numeric(dts$idx)
+       EFG.idx <- rbind(EFG.idx,dts)
+     } else {
+       cat(sprintf("%s > %s is empty",ver, arch))
+     }
+  }
+}
+
+
+ slc <- unique(EFG.idx$EFG)
+ ## exclude the anthropogenic
+ slc <- slc[!(grepl("^F3.?",slc) | grepl("^T7.?",slc) | grepl("^M4.?",slc) | grepl("^MT3.?",slc) | grepl("^S2.?",slc) | grepl("^SF2.?",slc))]
+ ## Ice and snow groups in the southern hemisphere are not well covered by human impact variables
+ # slc <- slc[!slc %in% c("T6.1","T6.2","M2.5","F2.10")]
+ ## Subterranean EFG are not well covered by the protection/degradation variables
+ slc <- slc[!grepl("^S",slc)]
+
+
+ EFG.idx <- EFG.idx %>% filter(EFG %in% slc)
+
+
+save(file=sprintf("%s/Rdata/Impact-index-all-versions.rda", script.dir), EFG.idx, EFG.names)

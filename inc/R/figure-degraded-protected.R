@@ -20,7 +20,7 @@ load(sprintf("%s/Degraded-protected-2013-all-versions.rda", Rdata.dir))
 
 ## code for `degraded vs protected` plots
 
-EFG.basic.plot <- function(dataset,y,v="version-2.0.0",g="Terrestrial",h=17) {
+EFG.basic.plot <- function(dataset,y,v="version-2.0.1b",g="Terrestrial",h=17) {
   x <- dataset %>% filter(group %in% g & version %in% v)
   ggplot(x, aes(degraded, protected, colour = biome.lab, shape=biome.lab)) +
     geom_point( size = 2) +
@@ -29,7 +29,7 @@ EFG.basic.plot <- function(dataset,y,v="version-2.0.0",g="Terrestrial",h=17) {
     scale_shape_manual(unique(x$biome.lab),
       values=y$pch[unique(match(x$biome.lab,y$lab))]) +
       geom_hline(yintercept = h, color="black",lty=3,lwd=.5) +
-      geom_vline(xintercept=70,color="black",lty=3,lwd=.5) + coord_cartesian(xlim=c(0,100),ylim=c(0,30))
+      geom_vline(xintercept=70,color="black",lty=3,lwd=.5) + coord_cartesian(xlim=c(0,100),ylim=c(0,100))
 }
 
 beautify.plot <- function(x) {
@@ -39,10 +39,10 @@ x +  labs( x = "% exposed to high pressures", y = "% protected",colour = "Biomes
 
 }
 
-plotT.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.0",g="Terrestrial") %>% beautify.plot()
-plotF.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.0",g="Freshwater") %>% beautify.plot()
-plotR.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.0",g="Transitional") %>% beautify.plot()
-plotM.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.0",g="Marine",h=10) %>% beautify.plot()
+plotT.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.1b",g="Terrestrial") %>% beautify.plot()
+plotF.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.1b",g="Freshwater") %>% beautify.plot()
+plotR.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.1b",g="Transitional") %>% beautify.plot()
+plotM.2 <- EFG.basic.plot(EFG.data,d.legend,v="version-2.0.1b",g="Marine",h=10) %>% beautify.plot()
 
 plotT.1 <- EFG.basic.plot(EFG.data,d.legend,v="version-1.1.0",g="Terrestrial") %>% beautify.plot()
 plotF.1 <- EFG.basic.plot(EFG.data,d.legend,v="version-1.1.0",g="Freshwater") %>% beautify.plot()
@@ -55,23 +55,34 @@ plotM.1 <- EFG.basic.plot(EFG.data,d.legend,v="version-1.1.0",g="Marine",h=10) %
 ggarrange(plotT.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
   plotT.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
   common.legend = TRUE, legend="bottom")
-# ggsave(file='DegradedProtectedPlot-Terrestrial-both-versions.pdf',device=pdf)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Terrestrial-both-versions.pdf',work.dir),device=pdf)
 
 ggarrange(plotF.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
   plotF.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
   common.legend = TRUE, legend="bottom")
-# ggsave(file='DegradedProtectedPlot-Freshwater-both-versions.pdf',device=pdf)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Freshwater-both-versions.pdf',work.dir),device=pdf)
 
 ggarrange(plotR.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
   plotR.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
   common.legend = TRUE, legend="bottom")
-# ggsave(file='DegradedProtectedPlot-Transitional-both-versions.pdf',device=pdf)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Transitional-both-versions.pdf',work.dir),device=pdf)
 
 ggarrange(plotM.1 + geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 1.1"),
   plotM.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + labs( title = "version 2.0"),
   common.legend = TRUE, legend="bottom")
-# ggsave(file='DegradedProtectedPlot-Marine-both-versions.pdf',device=pdf)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Marine-both-versions.pdf',work.dir),device=pdf)
 
+plotF.2+ geom_text_repel(aes(label = EFG),colour=1,size=3)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Freshwater.pdf',work.dir),device=pdf)
+
+plotT.2+ geom_text_repel(aes(label = EFG),colour=1,size=3)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Terrestrial.pdf',work.dir),device=pdf)
+
+plotR.2+ geom_text_repel(aes(label = EFG),colour=1,size=3)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Transitional.pdf',work.dir),device=pdf)
+
+plotM.2+ geom_text_repel(aes(label = EFG),colour=1,size=3)
+ggsave(file=sprintf('%s/output/figures/DegradedProtectedPlot-Marine.pdf',work.dir),device=pdf)
 
 # compose figure with subplots for each group
 
@@ -99,27 +110,31 @@ the.legend <- get_legend(
 
 
 # prow <- plot_grid(plotT , plotF , plotR , plotM , align = 'vh', labels = c("A", "B", "C","D"), hjust = -1, nrow = 2)
+brksx <- lblsx <- seq(0,100,length=5)
+brksy <- lblsy <- c(0,10,20,30)
+lblsy[length(lblsy)] <- ''
+##brks <- lbls <- lblsx <- c(1,5,10,20,40,70,100)
 
 prow <- plot_grid(
-  plotT.2 + theme(legend.position="none") + scale_y_continuous( breaks=c(0,10,20,30),labels=c(0,10,20,'')),
-  plotF.2 + theme(legend.position="none") + scale_y_continuous( breaks=c(0,10,20,30),labels=c(0,10,20,'')),
-  plotR.2 + theme(legend.position="none") + scale_y_continuous( breaks=c(0,10,20,30),labels=c(0,10,20,'')),
-  plotM.2 + theme(legend.position="none") + scale_y_continuous( breaks=c(0,10,20,30),labels=c(0,10,20,'')),
+  plotT.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy) + coord_cartesian(xlim=c(10,90),ylim=c(0,30)),##scale_y_sqrt( breaks=brks,labels=lbls) + scale_x_sqrt( breaks=brks,labels=lblsx),
+  plotF.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy)+ coord_cartesian(xlim=c(10,90),ylim=c(0,30)),
+  plotR.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy)+ coord_cartesian(xlim=c(10,90),ylim=c(0,30)),
+  plotM.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy)+ coord_cartesian(xlim=c(10,90),ylim=c(0,30)),
   align = 'vh',
   labels = c("A", "B", "C","D"),
   hjust = -1,
   nrow = 2
 )
 
-plot_grid(prow, the.legend, rel_widths = c(7, 3))
+#plot_grid(prow, the.legend, rel_widths = c(7, 3))
 # ggsave(file='DegradedProtectedPlot-version-2.pdf',device=pdf)
 
 # for interactive version run:
 ### shiny::runApp(sprintf('%s/app.R',shiny.dir))
 
 ## Composite figure for manuscript
-output.fig <- sprintf("%s/Figure3_EFG_4panels_year2013_WDPAall_noLabels.pdf",work.dir)
-if (!file.exists(output.fig)) {
+output.fig <- sprintf("%s/output/figures/Figure3_EFG_4panels_year2013_noLabels.pdf",work.dir)
+#if (!file.exists(output.fig)) {
 
   ## 300 dpi
   ## width: 89 mm (single column) and 183 mm (double column)
@@ -138,4 +153,6 @@ if (!file.exists(output.fig)) {
   plot_grid(prow, the.legend, rel_widths = c(70, 30))
   dev.off()
 
-}
+#}
+
+EFG.data %>% filter(version %in% 'version-2.0.1b') %>% select(group,biome.lab,EFG,version,protected,`wild unprotected`,degraded,total) %>% write.csv(file='Summary-table-degraded-protected.csv')
