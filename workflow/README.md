@@ -87,6 +87,7 @@ cd $WORKDIR
 mkdir -p $WORKDIR/output/figures/sankeyplots
 R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R
 R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-change-degraded.R
+R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-change-protected.R
 R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-barplot-all.R
 R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-boxplots.R
 ```

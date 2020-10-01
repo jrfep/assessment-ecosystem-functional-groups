@@ -12,7 +12,7 @@ setwd(work.dir)
 
 
 
-load(sprintf("%s/Rdata/Degraded-protected-2013-all-versions.rda", script.dir))
+load(sprintf("%s/Rdata/Degraded-protected-all-all-versions.rda", script.dir))
 
 
 clrs <- brewer.pal(12,"Paired")

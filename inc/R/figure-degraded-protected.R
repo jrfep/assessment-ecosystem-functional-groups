@@ -14,8 +14,9 @@ Rdata.dir <- sprintf("%s/Rdata/",Sys.getenv("SCRIPTDIR"))
 shiny.dir <- sprintf("%s/apps/shiny/",Sys.getenv("SCRIPTDIR"))
 setwd(work.dir)
 
-
-load(sprintf("%s/Degraded-protected-2013-all-versions.rda", Rdata.dir))
+# use only WDPA data up to 2013
+##load(sprintf("%s/Degraded-protected-2013-all-versions.rda", Rdata.dir))
+load(sprintf("%s/Degraded-protected-all-all-versions.rda", Rdata.dir))
 
 
 ## code for `degraded vs protected` plots
@@ -97,7 +98,41 @@ plotM.2+ geom_text_repel(aes(label = EFG),colour=1,size=3) + theme(legend.positi
 dev.off()
 
 
+brksx <- lblsx <- seq(0,100,length=5)
+brksy <- lblsy <- seq(0,100,length=5)
+lblsy[length(lblsy)] <- ''
+
+brksmy <- lblsmy <- seq(0,40,length=5)
+lblsmy[length(lblsmy)] <- ''
+
+prow <- plot_grid(
+  plotT.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy)+ coord_cartesian(xlim=c(0,90),ylim=c(0,90)) + geom_text_repel(aes(label = EFG),colour=1,size=3) ,##scale_y_sqrt( breaks=brks,labels=lbls) + scale_x_sqrt( breaks=brks,labels=lblsx),
+  plotF.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy)+ coord_cartesian(xlim=c(0,90),ylim=c(0,90)) + geom_text_repel(aes(label = EFG),colour=1,size=3),
+  plotM.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksmy,labels=lblsmy)+ coord_cartesian(xlim=c(0,90),ylim=c(0,40)) + geom_text_repel(aes(label = EFG),colour=1,size=3),
+  plotR.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksmy,labels=lblsmy)+ coord_cartesian(xlim=c(0,90),ylim=c(0,40)) + geom_text_repel(aes(label = EFG),colour=1,size=3),
+  align = 'vh',
+  labels = c("A", "B", "C","D"),
+  hjust = -1,
+  nrow = 2
+)
 # compose figure with subplots for each group
+
+
+fig.res = 300
+inch.to.mm = 25.4
+fig.width = 180
+fig.height = 120
+point.size = 12
+
+pdf(sprintf('%s/output/figures/DegradedProtectedPlot-Appendix.pdf',work.dir), width= fig.width/inch.to.mm, height=fig.height/inch.to.mm, pointsize=point.size)
+prow
+dev.off()
+
+#png(sprintf('%s/output/figures/DegradedProtectedPlot-Appendix.png',work.dir), width= 700, height=500, pointsize=point.size)
+#prow
+#dev.off()
+
+
 
 mi.legend <- d.legend
 mi.legend$cc  <- rep(1,16)
@@ -129,7 +164,7 @@ lblsy[length(lblsy)] <- ''
 ##brks <- lbls <- lblsx <- c(1,5,10,20,40,70,100)
 
 prow <- plot_grid(
-  plotT.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy) + coord_cartesian(xlim=c(10,90),ylim=c(0,30)),##scale_y_sqrt( breaks=brks,labels=lbls) + scale_x_sqrt( breaks=brks,labels=lblsx),
+  plotT.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy) + coord_cartesian(xlim=c(10,90),ylim=c(0,30))  ,##scale_y_sqrt( breaks=brks,labels=lbls) + scale_x_sqrt( breaks=brks,labels=lblsx),
   plotF.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy)+ coord_cartesian(xlim=c(10,90),ylim=c(0,30)),
   plotR.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy)+ coord_cartesian(xlim=c(10,90),ylim=c(0,30)),
   plotM.2 + theme(legend.position="none") + scale_x_continuous( breaks=brksx,labels=lblsx) + scale_y_continuous( breaks=brksy,labels=lblsy)+ coord_cartesian(xlim=c(10,90),ylim=c(0,30)),
