@@ -27,7 +27,7 @@ clr2 <- inferno(6)
 
 
  biome.labels <- c("Rivers","Lakes","Transitional waters", "Marine shelves","Pelagic ocean waters", "Deep seafloor","Brackish tidal systems", "Shoreline systems", "Tropical-subtropical forests", "Temperate-boreal forests and woodlands", "Shrublands & shrub-dominated woodlands", "Tropical-temperate grassy ecosystems", "Deserts and semi-deserts", "Polar/alpine (cryogenic ecosystems)", "Palustrine wetlands","Supralittoral")
- biome.labels <- c("F1 Rivers","F2 Lakes","FM1 Transitional waters", "M1 Marine shelves","M2 Pelagic ocean waters", "M3 Deep seafloor","MFT1 Brackish tidal systems", "MT1 Shoreline systems", "T1 Tropical-subtropical forests", "T2 Temperate-boreal woodlands", "T3 Shrub-dominated woodlands", "T4 Grassy ecosystems", "T5 Deserts and semi-deserts", "T6 Cryogenic ecosystems", "TF1 Palustrine wetlands","MT2 Supralittoral systems")
+ biome.labels <- c("F1 Rivers","F2 Lakes","FM1 Transitional waters", "M1 Marine shelves","M2 Pelagic ocean waters", "M3 Deep seafloor","MFT1 Brackish tidal systems", "MT1 Shoreline systems", "T1 Tropical-subtropical forests", "T2 Temperate-boreal forests", "T3 Shrub-dominated ecosystems", "T4 Savannas and grasslands", "T5 Deserts and semi-deserts", "T6 Cryogenic ecosystems", "TF1 Palustrine wetlands","MT2 Supralittoral systems")
 
  d.legend <- data.frame(lab=biome.labels, pch=c(17,17,17,15,15,15,15,15,16,16,16,16,16,16,17,0), col=clr2[c(1,6,3,4,2,1,5,6,1:6,2,4)], stringsAsFactors=F)
 
