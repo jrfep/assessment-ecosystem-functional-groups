@@ -1,27 +1,55 @@
 export MIHOST=$(hostname -s)
 
+export PROJECTNAME=assessment-ecosystem-functional-groups
+export SCRIPTDIR=$HOME/proyectos/IUCN-GET/$PROJECTNAME
+
 case $MIHOST in
 terra)
   export GISDATA=/opt/gisdata
-  export GISDB=/opt/gisdb
-  export SCRIPTDIR=/home/jferrer/proyectos/
-  export WORKDIR=$HOME/tmp/
+  export GISDB=/opt/gisdb/ecosphere
+  export GISOUT=/opt/gisout/output
+  export WORKDIR=$HOME/tmp/$PROJECTNAME
+  export REFDIR=$HOME/Cloudstor/Shared/EFTglobalmaps/
   ;;
 roraima)
-  export GISDATA=$HOME/Cloudstor/Shared/
-  export GISDB=$HOME/gisdb
-  export SCRIPTDIR=$HOME/proyectos/
-  export WORKDIR=$HOME/tmp/
+  export GISDATA=$HOME/gisdata
+  export GISDB=$HOME/gisdb/ecosphere
+  export GISOUT=$HOME/gisout
+  export WORKDIR=$HOME/tmp/$PROJECTNAME
+  export REFDIR=$HOME/Cloudstor/Shared/EFTglobalmaps/
+  ;;
+  *)
+   if [ -e /srv/scratch/cesdata ]
+   then
+      export SHAREDSCRATCH=/srv/scratch/cesdata
+      export PRIVATESCRATCH=/srv/scratch/$USER
+
+      export GISDATA=$SHAREDSCRATCH/gisdata
+      export GISDB=$PRIVATESCRATCH/gisdb
+      export GISOUT=$PRIVATESCRATCH/output/
+      source $HOME/.secrets
+      export WORKDIR=$PRIVATESCRATCH/tmp/$PROJECTNAME
+      export REFDIR=$PRIVATESCRATCH/DKeith-data/
+   else
+      echo "I DON'T KNOW WHERE I AM, please customize project-env.sh file"
+   fi
   ;;
 esac
 
-# store the zenodo API token in a file in home directory
-export ZENODOTOKEN=$(cat $HOME/.ZenodoToken)
-
-export PROJECTNAME=assessment-ecosystem-functional-groups
-export SCRIPTDIR=$SCRIPTDIR/UNSW/$PROJECTNAME
-export WORKDIR=$WORKDIR/$PROJECTNAME
-export GISOUT=$WORKDIR/indicative-maps/
+export LOCATION=earth
 
 mkdir -p $WORKDIR
-mkdir -p $GISOUT
+
+if [ -e $HOME/.database.ini ]
+then
+  grep -A4 psqlaws $HOME/.database.ini | tail -n +2 > tmpfile
+  while IFS="=" read -r key value; do
+    case "$key" in
+      "host") export DBHOST="$value" ;;
+      "port") export DBPORT="$value" ;;
+      "database") export DBNAME="$value" ;;
+      "user") export DBUSER="$value" ;;
+    esac
+  done < tmpfile
+  rm tmpfile
+fi
