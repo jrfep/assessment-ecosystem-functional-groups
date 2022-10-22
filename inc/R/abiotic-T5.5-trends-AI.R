@@ -23,7 +23,7 @@ pre <- stack(sprintf("%s/INPUT/cru_ts4.03.1901.2018.pre.dat.nc",work.dir),varnam
 sumfile <- sprintf("%sOUTPUT/AI-TS-summary.rds",work.dir)
 AI_summary <- tibble()
 
-for (k in all_ids) {
+for (k in sample(all_ids)) {
    econame <- teow %>% filter(OBJECTID %in% k) %>% pull(ECO_NAME)
    outfile <- sprintf("%sOUTPUT/AI-TS-%04d.rds",work.dir,k)
    if (!file.exists(outfile)) {
@@ -53,6 +53,6 @@ for (k in all_ids) {
    }
    
    AI_summary %<>% bind_rows({AI_data %>% group_by(AIclass) %>% summarise(cells=n_distinct(id),cell_years=n_distinct(id,year)) %>%
-      transmute(eco=econame,total=total_cells,class=AIclass,cells,cell_years)})
+      transmute(oid=k,eco=econame,total=total_cells,class=AIclass,cells,cell_years)})
    saveRDS(file=sumfile,AI_summary)
 }
