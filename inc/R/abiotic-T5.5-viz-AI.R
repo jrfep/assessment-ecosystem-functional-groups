@@ -2,7 +2,19 @@ require(dplyr)
 require(magrittr)
 require(ggplot2)
 require(plotly)
+require(purrr)
 source(sprintf("%s/proyectos/IUCN-GET/assessment-ecosystem-functional-groups/env/project-env.R",Sys.getenv("HOME")))
+RS <-  function(x,t0=1,tF=2,CV=0.05) {
+  IV <- x$fit[t0]
+  FV <- x$fit[tF]
+  RS <- case_when(
+    IV>CV ~ as.numeric(NA),
+    FV<IV ~ 0,
+    FV>CV ~ 100,
+    TRUE ~ 100 * (FV-IV)/(CV-IV)
+  )
+  return(RS)
+}
 
 sumfile <- sprintf("%sOUTPUT/AI-TS-summary.rds",work.dir)
 AI_summary <- readRDS(sumfile)
@@ -32,82 +44,50 @@ ggplot(AI_data,aes(x=year,y=AI)) + geom_point(colour='peru') +
   geom_smooth(formula=y~x,method='loess',colour='red',fill='pink') +theme_bw()+ facet_wrap(grp~id) 
 
 
-# First nest by id
-require(purrr)
-AI_data.nested <- AI_data %>%
-  group_by(id) %>%
-  nest_by()
+# First split by id
 
-# Now apply the linear model call by group using the data.
-AI_data.nested %>% map(., ~ loess(AI ~ year, data = .$data))
-  mutate(models = map(data, ~ loess(AI ~ year, data = .)))
-
-  RS <-  function(x,CV=0.05) {
-    IV <- x$fit[1]
-    FV <- x$fit[2]
-    RS <- case_when(
-      IV>CV ~ as.numeric(NA),
-      FV<IV ~ 0,
-      FV>CV ~ 100,
-      TRUE ~ 100 * (FV-IV)/(CV-IV)
-    )
-    return(RS)
-  }
-  
-    
- RS_rslt <-  AI_data %>%
-    split(.$id) %>%
-    map(~ loess(AI ~ year, data = .x)) %>%  
-    map(~predict(.x,data.frame(year=c(1901,2018)),se=T)) %>%
-    map_dbl(~RS(.x))
-  
+AI_loess <-  AI_data %>% filter(!is.na(AI) & is.finite(AI)) %>% 
+  split(.$id) %>%
+  map(~ loess(AI ~ year, data = .x)) %>%  
+  map(~predict(.x,data.frame(year=c(1915,1965,2015)),se=T)) 
+RS100yr <- AI_loess %>% map_dbl(~RS(.x,t0=1,tF=3))
+RS50yr <- AI_loess %>% map_dbl(~RS(.x,t0=2,tF=3))
 
 
- mean(RS_rslt>30,na.rm=T)
- mean(RS_rslt>50,na.rm=T)
- mean(RS_rslt>80,na.rm=T)
-summary(RS_rslt)
+
+mean(RS100yr>30,na.rm=T)
+mean(RS50yr>30,na.rm=T)
+mean(RS100yr>50,na.rm=T)
+ mean(RS100yr>80,na.rm=T)
+ summary(RS100yr)
+ summary(RS50yr)
  
-globalRS <- tibble()
- for (k in dats$oid) {
-   input.file <- sprintf("%sOUTPUT/AI-TS-%04d.rds",work.dir,k)
-   AI_data <- readRDS(input.file)
-   RS_rslt <-  AI_data %>% filter(!is.na(AI) & is.finite(AI)) %>% 
-     split(.$id) %>%
-     map(~ loess(AI ~ year, data = .x)) %>%  
-     map(~predict(.x,data.frame(year=c(1901,2018)),se=T)) %>%
-     map_dbl(~RS(.x))
-  #if (any(RS_rslt>0))
-    globalRS %<>% bind_rows(tibble(id=k,RS=RS_rslt)) 
-     
- }
-globalRS %>% filter(!is.na(RS)) %>% group_by(id) %>% summarise(meanRS=mean(RS)) %>%
-ggplot(aes(x=meanRS)) + geom_histogram(bins=10)
+ 
+ 
+ globalRS <- readRDS(sprintf("%sOUTPUT/AI-TS-RS.rds",work.dir))
+ globalRS %>% filter(!is.na(RS100yr)) %>% group_by(id) %>% summarise(n=n(),meanRS=mean(RS100yr)) %>%
+   ggplot(aes(x=meanRS)) + geom_histogram(bins=10)
+ globalRS %>% filter(!is.na(RS50yr)) %>% group_by(id) %>% summarise(n=n(),meanRS=mean(RS50yr)) %>%
+   ggplot(aes(x=meanRS)) + geom_histogram(bins=10)
 
+ globalRS %>% filter(!is.na(RS100yr)) %>% group_by(id) %>% 
+   summarise(n=n(),meanRS_100yr=mean(RS100yr,na.rm=T),meanRS_50yr=mean(RS50yr,na.rm=T)) %>% print(n=100)
 globalRS %>% filter(!is.na(RS)) %>% 
   ggplot(aes(x=RS)) + geom_histogram(bins=10)
 
+
+require(sf)
+slc <- globalRS %>% filter(!is.na(RS100yr)) %>% pull(id) %>% unique
+teow <- read_sf(sprintf("%s/INPUT/teow_2017_valid.gpkg",work.dir))
+t5_5 <- teow  %>% filter(OBJECTID %in% slc) %>% st_centroid 
+
+t5_5 %<>% left_join({globalRS %>% filter(!is.na(RS100yr)) %>% group_by(id) %>% 
+  summarise(n=n(),meanRS_100yr=mean(RS100yr,na.rm=T),meanRS_50yr=mean(RS50yr,na.rm=T))}, by=c('OBJECTID'='id'))
    
-ggplot(AI_data,aes(x=year,y=AI)) + geom_line(aes(group=id,colour=AIclass)) + 
-  geom_smooth(method='loess') + facet_wrap(.~grp) 
+p <-ggplot(t5_5) +geom_sf(aes(size=n,colour=round(meanRS_100yr,1),text=ECO_NAME))
+ggplotly(p)
 
-AI <- pres[[1]]/(pets[[1]]*30)
-matplot(t(AI),type="l")
-rowMeans(AI<0.05)
-
-
-for (yy in (2018-50):2018) {
-  ix <- grep(sprintf("X%s",yy),names(pet))
-  if (!exists("AI")) {
-    AI <- stack(sum(subset(pre,ix))/(sum(subset(pet,ix))*30))
-  } else {
-    AI <- addLayer(AI,sum(subset(pre,ix))/(sum(subset(pet,ix))*30))
-  }
-  ##plot(AI)
-}
-plot(AI,25)
+#ggplot(AI_data,aes(x=year,y=AI)) + geom_line(aes(group=id,colour=AIclass)) + 
+#  geom_smooth(method='loess') + facet_wrap(.~grp) 
 
 
-writeRaster(mean(AI),file="CRU-AI.tif",format="GTiff")
-plot(mean(AI),col=brewer.pal(5,"Pastel1"),breaks=c(0,0.05,0.2,0.5,0.65,400))
-table(cut(values(mean(AI)),breaks=c(0,0.05,0.2,0.5,0.65,Inf),labels=c("hyper-arid","arid","semi-arid","dry sub-humid","humid")))
