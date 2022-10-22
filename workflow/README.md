@@ -87,6 +87,7 @@ cd $WORKDIR
 mkdir -p $WORKDIR/output/figures/sankeyplots
 R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-degraded-protected.R
 R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-change-degraded.R
+R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-change-protected.R
 R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-barplot-all.R
 R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-boxplots.R
 ```
@@ -94,10 +95,16 @@ R --vanilla CMD BATCH $SCRIPTDIR/inc/R/figure-boxplots.R
 Python script for sankey plots.
 
 ```sh
+cd $WORKDIR
 conda activate
 python3 $SCRIPTDIR/inc/python/figure-sankey-plots.py
 ```
 
+```sh
+cd $WORKDIR
+tar -cjvf Transform-Terrestrial.tar.bz2 output/version-2.0.1b/Transform_Terrestrial_*
+
+```
 ## Step 5. Shiny App
 
 ### Interactive figures
