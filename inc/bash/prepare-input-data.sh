@@ -18,3 +18,6 @@ cp $GISDATA/ecoregions/global/TEOW/teow_2017_valid.gpkg $WORKDIR/INPUT
 # for T5.5 use this file
 #ls $REFDIR/*/*T5-5*
 
+# Sea ice time series
+find $GISDATA/cryosphere/global/SeaIceIndex/north/monthly/geotiff/ -name "*extent*"
+
