@@ -1,18 +1,55 @@
 # *workflow* folder
 
-This file describes the steps for reproducing the analysis in *Appendix S5. Preliminary global assessment of pressures and protection of Ecosystem Functional Groups, from data import to the production of outputs and products* from Keith *et al.* (submitted)
+This file describes the steps for reproducing the analysis in ***TO DO Ferrer-Paris et al.***, from data import to visualisation of results.
+
+
+# Ecosystem Functional Groups
+
+## F2.1
+large lakes + GSW
+## F1.3 and F2.4
+river/lake ice
+
+
+
+## T5.5
+### Abiotic degradation
+
+## M2.5
+### Regional subdivision
+
+Behera et al. 2020 suggest following regions in the Antarctic:
+> The five sectors are the Weddell Sea sector (60◦W to 20◦E), the Indian Ocean (20◦E to 90◦E), the Pacific Ocean (90◦E to 160◦E), the Ross Sea (160◦E to 140◦W), and the Bellam or (Amundsen-Bellingshausen) Sea sectors (140◦W to 60◦W), following Lefebvre et al. (2004).
+
+Or see CCAMLR divisions and subareas
+
+### Spatial extent
+
+Sea ice extent from
+> Fetterer, F., K. Knowles, W. N. Meier, M. Savoie, and A. K. Windnagel. 2017, updated daily. Sea Ice Index, Version 3. [Indicate subset used]. Boulder, Colorado USA. NSIDC: National Snow and Ice Data Center. doi: https://doi.org/10.7265/N5K072F8. [Date Accessed].
+
+
+### Abiotic degradation
+
+Sea ice concentration from
+> Fetterer, F., K. Knowles, W. N. Meier, M. Savoie, and A. K. Windnagel. 2017, updated daily. Sea Ice Index, Version 3. [Indicate subset used]. Boulder, Colorado USA. NSIDC: National Snow and Ice Data Center. doi: https://doi.org/10.7265/N5K072F8. [Date Accessed].
+
+Sea surface temperature? See Behera et al. 2020
+
+### Biotic disruption
+
+Chlorophyll-a concentration? See Behera et al. 2020
+
 
 ## Environment and requirements
 This workflow has been created using the following operating system and software:
 
-* Xubuntu 18.04
-* R 3.6.1
-* Python 3.7.3
-* GRASS GIS 7.4.0 (64 bit)
-* GDAL 2.2.3
-* PostgreSQL 10.12 with postGIS extension
+* MacOS and Linux Solus
+* R ???
+* Python ???
+* GDAL ???
 
-To set-up programming environmental variables edit the files in folder `env/` and source them in a bash shell: `source env/project-env.sh`. We use anaconda for our python configuration, so we need to use `conda deactivate` before starting grass, and `conda activate` before running python scripts.
+To set-up programming environmental variables edit the files in folder `env/` and source them in a bash shell: `source env/project-env.sh`.
 
 ## Workflow
 
