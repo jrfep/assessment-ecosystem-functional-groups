@@ -24,3 +24,7 @@ for (hh in c("N","S")) {
 }
 out.file <- sprintf("%sOUTPUT/SeaIce-TS-extent.rds",work.dir)
 saveRDS(file=out.file,sea_ice_extent)
+
+#sst <- stack(sprintf("%s/ocean/global/OceanColorData/AQUA_MODIS.20020101_20021231.L3m.YR.SST4.sst4.9km.nc",gis.data))
+#sst.S <- crop(sst,extent(-180,180,-90,-40))
+#sst.Sxy <- projectRaster(sst.S,rst)
